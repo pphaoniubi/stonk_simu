@@ -115,6 +115,60 @@ app.get('/historical/:ticker', (req, res) => {
   );
 });
 
+app.post('/update-prices', (req, res) => {
+  console.log('Updating stock prices...');
+  
+  // Get the current date from the database
+  db.query('SELECT MIN(date) AS current_date FROM historical_prices WHERE updated = 0', (err, results) => {
+      if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Database query error' });
+          return;
+      }
+
+      const currentDate = results[0].current_date;
+
+      if (!currentDate) {
+          console.log('No more dates to update.');
+          res.status(200).json({ message: 'All dates are already processed.' });
+          return;
+      }
+
+      // Update the prices for the current date
+      db.query(
+          `UPDATE stocks s
+           JOIN historical_prices hp ON s.ticker = hp.ticker
+           SET s.price = hp.close
+           WHERE hp.date = ?`, 
+          [currentDate], 
+          (err) => {
+              if (err) {
+                  console.error(err);
+                  res.status(500).json({ error: 'Failed to update stock prices.' });
+                  return;
+              }
+
+              console.log(`Stock prices updated for date: ${currentDate}`);
+
+              // Mark the date as updated
+              db.query(
+                  'UPDATE historical_prices SET updated = 1 WHERE date = ?',
+                  [currentDate],
+                  (err) => {
+                      if (err) {
+                          console.error(err);
+                          res.status(500).json({ error: 'Failed to mark date as updated.' });
+                          return;
+                      }
+                      console.log(`Marked date ${currentDate} as updated.`);
+                      res.status(200).json({ message: `Stock prices updated for date: ${currentDate}` });
+                  }
+              );
+          }
+      );
+  });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

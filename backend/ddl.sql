@@ -30,5 +30,6 @@ CREATE TABLE historical_prices (
     low DECIMAL(10, 2),
     close DECIMAL(10, 2),
     volume BIGINT,
+    update BOOLEAN,
     UNIQUE (ticker, date)
 );
