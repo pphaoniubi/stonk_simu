@@ -2,48 +2,65 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function App() {
-  const [stocks, setStocks] = useState([]);
-  const [symbol, setSymbol] = useState('');
-  const [quantity, setQuantity] = useState('');
+    const [stocks, setStocks] = useState({});
+    const [portfolio, setPortfolio] = useState({ balance: 10000, holdings: {} });
+    const [user] = useState("user1"); // Mock user
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/stocks')
-      .then(response => setStocks(response.data))
-      .catch(error => console.error(error));
-  }, []);
+    useEffect(() => {
+        fetchStocks();
+    }, []);
 
-  const buyStock = () => {
-    axios.post('http://localhost:5000/api/buy', { symbol, quantity })
-      .then(response => alert(response.data.message))
-      .catch(error => console.error(error));
-  };
+    const fetchStocks = async () => {
+        const response = await axios.get('http://localhost:5000/stocks');
+        setStocks(response.data);
+    };
 
-  return (
-    <div>
-      <h1>Stock Simulator</h1>
-      <h2>Available Stocks</h2>
-      <ul>
-        {stocks.map(stock => (
-          <li key={stock.id}>{stock.symbol}: ${stock.price}</li>
-        ))}
-      </ul>
+    const handleBuy = async (ticker) => {
+        const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
+        const response = await axios.post('http://localhost:5000/buy', { user, ticker, quantity: parseInt(quantity) });
+        if (response.data.success) {
+            setPortfolio(response.data.portfolio);
+        } else {
+            alert(response.data.message);
+        }
+    };
 
-      <h2>Buy Stock</h2>
-      <input 
-        type="text" 
-        placeholder="Symbol" 
-        value={symbol} 
-        onChange={(e) => setSymbol(e.target.value)} 
-      />
-      <input 
-        type="number" 
-        placeholder="Quantity" 
-        value={quantity} 
-        onChange={(e) => setQuantity(e.target.value)} 
-      />
-      <button onClick={buyStock}>Buy</button>
-    </div>
-  );
+    const handleSell = async (ticker) => {
+        const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
+        const response = await axios.post('http://localhost:5000/sell', { user, ticker, quantity: parseInt(quantity) });
+        if (response.data.success) {
+            setPortfolio(response.data.portfolio);
+        } else {
+            alert(response.data.message);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Stock Simulator</h1>
+            <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
+
+            <h3>Available Stocks</h3>
+            <ul>
+                {Object.keys(stocks).map((ticker) => (
+                    <li key={ticker}>
+                        {ticker}: ${stocks[ticker]}
+                        <button onClick={() => handleBuy(ticker)}>Buy</button>
+                        <button onClick={() => handleSell(ticker)}>Sell</button>
+                    </li>
+                ))}
+            </ul>
+
+            <h3>Your Holdings</h3>
+            <ul>
+                {Object.keys(portfolio.holdings).map((ticker) => (
+                    <li key={ticker}>
+                        {ticker}: {portfolio.holdings[ticker]} shares
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
 
 export default App;
