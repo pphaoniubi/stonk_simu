@@ -102,6 +102,20 @@ app.post('/sell', (req, res) => {
     );
 });
 
+app.get('/historical/:ticker', (req, res) => {
+  const { ticker } = req.params;
+
+  db.query(
+      'SELECT date, close FROM historical_prices WHERE ticker = ? ORDER BY date ASC',
+      [ticker],
+      (err, results) => {
+          if (err) throw err;
+          res.json(results); // Send data to the frontend
+      }
+  );
+});
+
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

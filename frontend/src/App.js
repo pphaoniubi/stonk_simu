@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import StockChart from './StockChart';
+
 
 function App() {
     const [stocks, setStocks] = useState({});
@@ -59,6 +61,8 @@ function App() {
                     </li>
                 ))}
             </ul>
+            <h1>Stock Chart</h1>
+            <StockChart ticker="AAPL" />
         </div>
     );
 }

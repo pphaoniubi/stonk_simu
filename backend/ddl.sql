@@ -20,3 +20,15 @@ CREATE TABLE holdings (
     FOREIGN KEY (username) REFERENCES users(username),
     FOREIGN KEY (ticker) REFERENCES stocks(ticker)
 );
+
+CREATE TABLE historical_prices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(10) NOT NULL,
+    date DATE NOT NULL,
+    open DECIMAL(10, 2),
+    high DECIMAL(10, 2),
+    low DECIMAL(10, 2),
+    close DECIMAL(10, 2),
+    volume BIGINT,
+    UNIQUE (ticker, date)
+);
