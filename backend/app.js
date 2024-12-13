@@ -29,7 +29,7 @@ db.connect((err) => {
 
 // Routes
 app.get('/stocks', (req, res) => {
-    db.query('SELECT * FROM stocks', (err, results) => {
+    db.query('SELECT * FROM stonks', (err, results) => {
         if (err) throw err;
         res.json(results);
     });
@@ -39,7 +39,7 @@ app.post('/buy', (req, res) => {
     const { user, ticker, quantity } = req.body;
 
     // Get stock price
-    db.query('SELECT price FROM stocks WHERE ticker = ?', [ticker], (err, results) => {
+    db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
         if (err) throw err;
         const price = results[0].price;
         const cost = price * quantity;
@@ -80,7 +80,7 @@ app.post('/sell', (req, res) => {
 
             if (currentQuantity >= quantity) {
                 // Get stock price and update user balance and holdings
-                db.query('SELECT price FROM stocks WHERE ticker = ?', [ticker], (err, results) => {
+                db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
                     if (err) throw err;
                     const price = results[0].price;
                     const revenue = price * quantity;

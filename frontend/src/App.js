@@ -6,7 +6,7 @@ import StockChart from './StockChart';
 function App() {
     const [stocks, setStocks] = useState({});
     const [portfolio, setPortfolio] = useState({ balance: 10000, holdings: {} });
-    const [user] = useState("user1"); // Mock user
+    const [user] = useState("test_user"); // Mock user
 
     useEffect(() => {
         fetchStocks();
@@ -14,6 +14,7 @@ function App() {
 
     const fetchStocks = async () => {
         const response = await axios.get('http://localhost:5000/stocks');
+        console.log(response)
         setStocks(response.data);
     };
 
