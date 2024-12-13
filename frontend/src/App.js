@@ -14,8 +14,8 @@ function App() {
 
     const fetchStocks = async () => {
         const response = await axios.get('http://localhost:5000/stocks');
-        console.log(response)
-        setStocks(response.data);
+        const stocks = response.data.map(item => item.ticker);
+        setStocks(stocks);
     };
 
     const handleBuy = async (ticker) => {
