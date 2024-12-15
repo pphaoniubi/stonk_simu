@@ -57,6 +57,28 @@ app.get('/balance', (req, res) => {
     });
 });
 
+app.get('/stock_balance', (req, res) => {
+    const username = req.query.username; // Extract username from query
+    console.log(username)
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+    db.query('SELECT balance FROM users WHERE username = ?', [username], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(results[0]);
+        console.log(results[0]);
+    });
+});
+
 
 app.post('/buy', (req, res) => {
     const { username, ticker, quantity } = req.body;
@@ -91,16 +113,15 @@ app.post('/buy', (req, res) => {
 });
 
 app.post('/sell', (req, res) => {
-    const { user, ticker, quantity } = req.body;
-
+    const { username, ticker, quantity } = req.body;
     // Check user holdings
     db.query(
         'SELECT quantity FROM holdings WHERE username = ? AND ticker = ?',
-        [user, ticker],
+        [username, ticker],
         (err, results) => {
             if (err) throw err;
             const currentQuantity = results.length ? results[0].quantity : 0;
-
+            console.log(results)
             if (currentQuantity >= quantity) {
                 // Get stock price and update user balance and holdings
                 db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
@@ -108,10 +129,10 @@ app.post('/sell', (req, res) => {
                     const price = results[0].price;
                     const revenue = price * quantity;
 
-                    db.query('UPDATE users SET balance = balance + ? WHERE username = ?', [revenue, user]);
+                    db.query('UPDATE users SET balance = balance + ? WHERE username = ?', [revenue, username]);
                     db.query(
                         'UPDATE holdings SET quantity = quantity - ? WHERE username = ? AND ticker = ?',
-                        [quantity, user, ticker],
+                        [quantity, username, ticker],
                         (err) => {
                             if (err) throw err;
                             res.json({ success: true });

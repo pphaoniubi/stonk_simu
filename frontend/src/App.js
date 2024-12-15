@@ -40,18 +40,15 @@ function App() {
     const handleBuy = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
         const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
-        if (response.data.success){
+        if (!response.data.success){
             alert(response.data.message);
         }
     };
 
     const handleSell = async (ticker) => {
-        console.log(ticker)
         const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
         const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
-        if (response.data.success) {
-            setPortfolio(response.data.portfolio);
-        } else {
+        if (!response.data.success){
             alert(response.data.message);
         }
     };
