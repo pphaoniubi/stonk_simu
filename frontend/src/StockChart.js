@@ -44,10 +44,7 @@ function StockChart({ ticker }) {
                 // Process data
                 const dates = data.map(entry => entry.date);
                 const prices = data.map(entry => entry.close);
-
-                console.log("Dates:", dates);
-                console.log("Prices:", prices);
-
+                
                 const ctx = canvasRef.current?.getContext('2d');
                 if (!ctx) {
                     console.error("Canvas context is not available");

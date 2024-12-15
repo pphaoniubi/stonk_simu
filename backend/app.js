@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 
 // Create MySQL Connection
 const db = mysql.createConnection({
-    host: 'localhost',    // Your MySQL host
-    user: 'root',         // Your MySQL username
-    password: '12345678pP!',         // Your MySQL password
-    database: 'stock_simu_db',   // Your database name
+    host: 'localhost',
+    user: 'root',
+    password: '12345678pP!',
+    database: 'stock_simu_db',
 });
 
 // Connect to MySQL
@@ -35,9 +35,32 @@ app.get('/stocks', (req, res) => {
     });
 });
 
-app.post('/buy', (req, res) => {
-    const { user, ticker, quantity } = req.body;
+app.get('/balance', (req, res) => {
+    const username = req.query.username; // Extract username from query
+    console.log(username)
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
 
+    db.query('SELECT balance FROM users WHERE username = ?', [username], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(results[0]);
+        console.log(results[0]);
+    });
+});
+
+
+app.post('/buy', (req, res) => {
+    const { username, ticker, quantity } = req.body;
+    console.log(req.body)
     // Get stock price
     db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
         if (err) throw err;
@@ -45,16 +68,16 @@ app.post('/buy', (req, res) => {
         const cost = price * quantity;
 
         // Check user balance
-        db.query('SELECT balance FROM users WHERE username = ?', [user], (err, results) => {
+        db.query('SELECT balance FROM users WHERE username = ?', [username], (err, results) => {
             if (err) throw err;
             const balance = results[0].balance;
 
             if (balance >= cost) {
                 // Update user balance and holdings
-                db.query('UPDATE users SET balance = balance - ? WHERE username = ?', [cost, user]);
+                db.query('UPDATE users SET balance = balance - ? WHERE username = ?', [cost, username]);
                 db.query(
                     'INSERT INTO holdings (username, ticker, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?',
-                    [user, ticker, quantity, quantity],
+                    [username, ticker, quantity, quantity],
                     (err) => {
                         if (err) throw err;
                         res.json({ success: true });
@@ -106,7 +129,7 @@ app.get('/historical/:ticker', (req, res) => {
   const { ticker } = req.params;
 
   db.query(
-      'SELECT date, close FROM historical_prices WHERE ticker = ? ORDER BY date ASC',
+      'SELECT date, close FROM historical_prices WHERE ticker = ? AND updated = 1 ORDER BY date ASC',
       [ticker],
       (err, results) => {
           if (err) throw err;
@@ -119,14 +142,14 @@ app.post('/update-prices', (req, res) => {
   console.log('Updating stock prices...');
   
   // Get the current date from the database
-  db.query('SELECT MIN(date) AS current_date FROM historical_prices WHERE updated = 0', (err, results) => {
+  db.query('SELECT MIN(date) AS min_date FROM historical_prices WHERE updated = 0', (err, results) => {
       if (err) {
           console.error(err);
           res.status(500).json({ error: 'Database query error' });
           return;
       }
-
-      const currentDate = results[0].current_date;
+      console.log(results)
+      const currentDate = results[0].min_date;
 
       if (!currentDate) {
           console.log('No more dates to update.');
@@ -136,7 +159,7 @@ app.post('/update-prices', (req, res) => {
 
       // Update the prices for the current date
       db.query(
-          `UPDATE stocks s
+          `UPDATE stonks s
            JOIN historical_prices hp ON s.ticker = hp.ticker
            SET s.price = hp.close
            WHERE hp.date = ?`, 

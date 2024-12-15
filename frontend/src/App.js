@@ -5,11 +5,14 @@ import StockChart from './StockChart';
 
 function App() {
     const [stocks, setStocks] = useState({});
-    const [portfolio, setPortfolio] = useState({ balance: 10000, holdings: {} });
-    const [user] = useState("test_user"); // Mock user
+    const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
+    const [username] = useState("test_user"); // Mock user
+    const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchStocks();
+        fetchPortfolioData();
     }, []);
 
     const fetchStocks = async () => {
@@ -18,9 +21,34 @@ function App() {
         setStocks(stocks);
     };
 
+    const fetchPortfolioData = async () => {
+        try {
+            // Fetch user balance
+            const response = await axios.get('http://localhost:5000/balance', {
+                params: { username: username }
+            });
+            const balance = parseFloat(response.data.balance);
+            console.log(balance);
+            setPortfolio((prevPortfolio) => ({
+                ...prevPortfolio,
+                balance: balance,
+            }));
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error);
+        }
+    };
     const handleBuy = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
-        const response = await axios.post('http://localhost:5000/buy', { user, ticker, quantity: parseInt(quantity) });
+        const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
+        if (response.data.success){
+            alert(response.data.message);
+        }
+    };
+
+    const handleSell = async (ticker) => {
+        console.log(ticker)
+        const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
+        const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
         if (response.data.success) {
             setPortfolio(response.data.portfolio);
         } else {
@@ -28,15 +56,21 @@ function App() {
         }
     };
 
-    const handleSell = async (ticker) => {
-        const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
-        const response = await axios.post('http://localhost:5000/sell', { user, ticker, quantity: parseInt(quantity) });
-        if (response.data.success) {
-            setPortfolio(response.data.portfolio);
-        } else {
-            alert(response.data.message);
+    const fastForward = async () => {
+        try {
+          // Clear previous errors
+          setError(null);
+    
+          // Replace the URL with your endpoint
+          const res = await axios.post("http://localhost:5000/update-prices");
+    
+          // Update state with response data
+          setResponse(res.data);
+        } catch (err) {
+          // Handle errors
+          setError(err.message);
         }
-    };
+      };
 
     return (
         <div>
@@ -48,8 +82,8 @@ function App() {
                 {Object.keys(stocks).map((ticker) => (
                     <li key={ticker}>
                         {ticker}: ${stocks[ticker]}
-                        <button onClick={() => handleBuy(ticker)}>Buy</button>
-                        <button onClick={() => handleSell(ticker)}>Sell</button>
+                        <button onClick={() => handleBuy(stocks[ticker])}>Buy</button>
+                        <button onClick={() => handleSell(stocks[ticker])}>Sell</button>
                     </li>
                 ))}
             </ul>
@@ -62,8 +96,9 @@ function App() {
                     </li>
                 ))}
             </ul>
+            <button onClick={fastForward}>Fast Forward</button>
             <h1>Stock Chart</h1>
-            <StockChart ticker="AAPL" />
+            <StockChart ticker="TSLA" />
         </div>
     );
 }
