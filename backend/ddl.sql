@@ -6,7 +6,8 @@ use stock_simu_db;
 
 CREATE TABLE users (
     username VARCHAR(50) PRIMARY KEY,
-    balance DECIMAL(10, 2) NOT NULL
+    balance DECIMAL(10, 2) NOT null,
+    stonk_balance DECIMAL(10, 2)
 );
 
 
@@ -51,5 +52,7 @@ INSERT INTO stonks (ticker, price) VALUES
 ('NFLX', NULL),	
 ('META', NULL),
 ('NVDA', NULL);
+
+
 
 select * from historical_prices;

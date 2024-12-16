@@ -6,13 +6,15 @@ import StockChart from './StockChart';
 function App() {
     const [stocks, setStocks] = useState({});
     const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
-    const [username] = useState("test_user"); // Mock user
+    const [stockBalance, setStockBalance] = useState(10)
+    const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchStocks();
         fetchPortfolioData();
+        fetchStockBalance();
     }, []);
 
     const fetchStocks = async () => {
@@ -33,6 +35,20 @@ function App() {
                 ...prevPortfolio,
                 balance: balance,
             }));
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error);
+        }
+    };
+
+    const fetchStockBalance = async () => {
+        try {
+            // Fetch user balance
+            const response = await axios.get('http://localhost:5000/stock_balance', {
+                params: { username: username }
+            });
+            const stock_balance = parseFloat(response.data.stock_holdings_value);
+            console.log(stock_balance);
+            setStockBalance(stock_balance);
         } catch (error) {
             console.error('Error fetching portfolio data:', error);
         }
@@ -63,6 +79,8 @@ function App() {
     
           // Update state with response data
           setResponse(res.data);
+
+          window.location.reload();
         } catch (err) {
           // Handle errors
           setError(err.message);
@@ -73,7 +91,7 @@ function App() {
         <div>
             <h1>Stock Simulator</h1>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
-
+            <h2>Stock Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <h3>Available Stocks</h3>
             <ul>
                 {Object.keys(stocks).map((ticker) => (

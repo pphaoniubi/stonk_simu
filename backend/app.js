@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345678pP!',
+    password: '123456',
     database: 'stock_simu_db',
 });
 
@@ -59,12 +59,23 @@ app.get('/balance', (req, res) => {
 
 app.get('/stock_balance', (req, res) => {
     const username = req.query.username; // Extract username from query
-    console.log(username)
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
 
-    db.query('SELECT balance FROM users WHERE username = ?', [username], (err, results) => {
+    db.query(
+        `
+            SELECT 
+            SUM(h.quantity * s.price) AS stock_holdings_value
+            FROM 
+            holdings h
+            JOIN 
+            stonks s
+            ON 
+            h.ticker = s.ticker
+            GROUP BY 
+            h.username = ?;
+            `, [username], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Database query error' });
