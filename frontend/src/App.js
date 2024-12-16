@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StockChart from './StockChart';
+import { format } from 'date-fns';
 
 
 function App() {
     const [stocks, setStocks] = useState({});
     const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
-    const [stockBalance, setStockBalance] = useState(10)
+    const [stockBalance, setStockBalance] = useState(10);
+    const [date, setDate] = useState(null);
     const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
@@ -15,6 +17,7 @@ function App() {
         fetchStocks();
         fetchPortfolioData();
         fetchStockBalance();
+        fetchDate();
     }, []);
 
     const fetchStocks = async () => {
@@ -53,6 +56,17 @@ function App() {
             console.error('Error fetching portfolio data:', error);
         }
     };
+
+    const fetchDate = async () => {
+        try {
+            // Fetch user balance
+            const response = await axios.get('http://localhost:5000/get-date');
+            setDate(format(new Date(response.data.max_date), 'MMMM dd, yyyy'));
+        } catch (error) {
+            console.error('Error fetching date: ', error);
+        }
+    };
+
     const handleBuy = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
         const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
@@ -90,6 +104,7 @@ function App() {
     return (
         <div>
             <h1>Stock Simulator</h1>
+            <h2>{date}</h2>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <h3>Available Stocks</h3>

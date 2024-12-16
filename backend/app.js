@@ -170,6 +170,16 @@ app.get('/historical/:ticker', (req, res) => {
   );
 });
 
+app.get('/get-date', (req, res) => {
+    db.query(
+        `SELECT MAX(date) AS max_date FROM historical_prices WHERE ticker = 'AAPL' AND updated = 1`,
+        (err, results) => {
+            if (err) throw err;
+            res.json(results[0]);
+        }
+    );
+});
+
 app.post('/update-prices', (req, res) => {
   console.log('Updating stock prices...');
   
