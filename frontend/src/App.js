@@ -10,6 +10,7 @@ function App() {
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
     const [username] = useState("test_user");
+    const [message, setMessage] = useState("Hello!");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
@@ -18,7 +19,25 @@ function App() {
         fetchPortfolioData();
         fetchStockBalance();
         fetchDate();
+        checkUser();
     }, []);
+
+    const checkUser = async () => {
+        try {
+            const response = await axios.post("http://localhost:5000/check-user", {
+                username: username.trim(),
+            });
+
+            if (response.data.exists) {
+                setMessage(`Hello, ${username}!`);
+            } else {
+                setMessage("Hello!");
+            }
+        } catch (error) {
+            console.error("Error checking user:", error);
+            setMessage("An error occurred. Please try again.");
+        }
+    };
 
     const fetchStocks = async () => {
         const response = await axios.get('http://localhost:5000/stocks');
@@ -104,6 +123,7 @@ function App() {
     return (
         <div>
             <h1>Stock Simulator</h1>
+            <h1>{message}</h1>
             <h2>{date}</h2>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
@@ -111,7 +131,7 @@ function App() {
             <ul>
                 {Object.keys(stocks).map((ticker) => (
                     <li key={ticker}>
-                        {ticker}: ${stocks[ticker]}
+                        {ticker}: {stocks[ticker]}
                         <button onClick={() => handleBuy(stocks[ticker])}>Buy</button>
                         <button onClick={() => handleSell(stocks[ticker])}>Sell</button>
                     </li>

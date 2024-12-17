@@ -27,6 +27,29 @@ db.connect((err) => {
     console.log('Connected to MySQL database.');
 });
 
+app.post("/check-user", (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        return res.status(400).json({ message: "Username is required" });
+    }
+
+    const query = "SELECT username FROM users WHERE username = ?";
+    db.query(query, [username], (err, results) => {
+        if (err) {
+            console.error("Error executing query:", err.message);
+            return res.status(500).json({ message: "Database error" });
+        }
+
+        // Check if user exists
+        if (results.length > 0) {
+            return res.json({ exists: true, user: results[0] });
+        } else {
+            return res.json({ exists: false });
+        }
+    });
+});
+
 // Routes
 app.get('/stocks', (req, res) => {
     db.query('SELECT * FROM stonks', (err, results) => {

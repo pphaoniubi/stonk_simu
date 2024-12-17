@@ -84,10 +84,26 @@ function StockChart({ ticker }) {
                         },
                         scales: {
                             x: {
-                                type: 'category', // Explicitly set the x-axis scale
+                                type: 'category', // Keep the default category scale
                                 title: {
                                     display: true,
-                                    text: 'Date',
+                                    text: 'Month',
+                                },
+                                ticks: {
+                                    callback: function (value, index, values) {
+                                        // Format the date label to show month only
+                                        const currentDate  = new Date(this.getLabelForValue(value));
+                                        const prevDate = index > 0 ? new Date(this.getLabelForValue(values[index - 1].value)) : null;
+                                        //console.log(currentDate.getMonth())
+                                        
+                                        if (!prevDate || currentDate.getMonth() !== prevDate.getMonth()) {
+                                            return currentDate.toLocaleString("default", { month: "short", year: "numeric" });
+                                        }
+                                
+                                        return ''; // Skip repeating months
+                                    },
+                                    maxRotation: 0, // Prevent label rotation
+                                    autoSkip: true, // Skip some labels for clarity
                                 },
                             },
                             y: {
