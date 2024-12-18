@@ -88,7 +88,6 @@ app.get('/balance', (req, res) => {
         }
 
         res.json(results[0]);
-        console.log(results[0]);
     });
 });
 
@@ -222,7 +221,6 @@ app.post('/update-prices', (req, res) => {
           res.status(500).json({ error: 'Database query error' });
           return;
       }
-      console.log(results)
       const currentDate = results[0].min_date;
 
       if (!currentDate) {

@@ -6,7 +6,7 @@ import "./App.css"
 
 
 function App() {
-    const [stocks, setStocks] = useState({});
+    const [stocks, setStocks] = useState([]);
     const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
@@ -26,7 +26,11 @@ function App() {
 
     const fetchStocks = async () => {
         const response = await axios.get('http://localhost:5000/stocks');
-        const stocks = response.data.map(item => item.ticker);
+        const stocks = response.data.map(item => ({
+            ticker: item.ticker,
+            price: item.price
+        }));
+        console.log(stocks)
         setStocks(stocks);
     };
 
@@ -126,12 +130,19 @@ function App() {
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <h3>Available Stocks</h3>
-            <ul>
-                {Object.keys(stocks).map((ticker) => (
-                    <li key={ticker}>
-                        {ticker}: {stocks[ticker]}
-                        <button onClick={() => handleBuy(stocks[ticker])}>Buy</button>
-                        <button onClick={() => handleSell(stocks[ticker])}>Sell</button>
+            <ul className="stock-ul">
+                {stocks.map((stock, index) => (
+                    <li key={index} className="stock-li">
+                        <span className="stock-ticker">{stock.ticker}</span>: 
+                        <span className="stock-quantity"> ${stock.price}</span>
+                        <div className="button-group">
+                            <button onClick={() => handleBuy(stock.ticker)} className="stock-button">
+                                Buy
+                            </button>
+                            <button onClick={() => handleSell(stock.ticker)} className="stock-button">
+                                Sell
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
@@ -142,13 +153,6 @@ function App() {
                     <li key={index} className="bubble">
                         <span className="ticker">{item.ticker}</span>
                         <span className="quantity">{item.quantity}</span>
-                    </li>
-                ))}
-            </ul>
-            <ul>
-                {Object.keys(portfolio.holdings).map((ticker) => (
-                    <li key={ticker}>
-                        {ticker}: {portfolio.holdings[ticker]} shares
                     </li>
                 ))}
             </ul>

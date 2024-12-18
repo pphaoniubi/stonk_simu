@@ -7,6 +7,7 @@
 /* Container styles */
 .bubble-list {
   display: flex; /* Arrange items in a row */
+  flex-direction: column; 
   gap: 10px; /* Add spacing between the bubbles */
   list-style: none; /* Remove default list styling */
   padding: 0; /* Remove default padding */
@@ -50,4 +51,31 @@
 .quantity {
   font-size: 12px; /* Smaller text for quantity */
   color: #555; /* Medium gray for quantity */
+}
+
+
+.stock-ul {
+  list-style: none; /* Remove bullets/numbers */
+  padding: 0; /* Remove padding for alignment */
+  margin: 0; /* Remove any default margin */
+}
+
+.stock-li {
+  display: flex; /* Align content horizontally */
+  align-items: center; /* Vertically center items */
+  gap: 10px; /* Add spacing between elements */
+  margin-bottom: 10px; /* Add spacing between rows */
+}
+
+.stock-button {
+  padding: 5px 10px; /* Add padding for buttons */
+  border: none; /* Optional: Remove default border */
+  background-color: #007bff; /* Light blue color */
+  color: white; /* White text */
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners */
+}
+
+.stock-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
