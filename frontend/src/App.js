@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StockChart from './StockChart';
 import { format } from 'date-fns';
+import "./App.css"
 
 
 function App() {
@@ -10,7 +11,6 @@ function App() {
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
     const [username] = useState("test_user");
-    const [message, setMessage] = useState("Hello!");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
@@ -19,25 +19,8 @@ function App() {
         fetchPortfolioData();
         fetchStockBalance();
         fetchDate();
-        checkUser();
     }, []);
 
-    const checkUser = async () => {
-        try {
-            const response = await axios.post("http://localhost:5000/check-user", {
-                username: username.trim(),
-            });
-
-            if (response.data.exists) {
-                setMessage(`Hello, ${username}!`);
-            } else {
-                setMessage("Hello!");
-            }
-        } catch (error) {
-            console.error("Error checking user:", error);
-            setMessage("An error occurred. Please try again.");
-        }
-    };
 
     const fetchStocks = async () => {
         const response = await axios.get('http://localhost:5000/stocks');
@@ -122,11 +105,9 @@ function App() {
 
     return (
         <div>
-            <h1>Stock Simulator</h1>
-            <h1>{message}</h1>
-            <h2>{date}</h2>
+            <h2 className="date">{date}</h2>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
-            <h2>Stock Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
+            <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <h3>Available Stocks</h3>
             <ul>
                 {Object.keys(stocks).map((ticker) => (
@@ -146,7 +127,7 @@ function App() {
                     </li>
                 ))}
             </ul>
-            <button onClick={fastForward}>Fast Forward</button>
+            <button onClick={fastForward}>Next</button>
             <h1>Stock Chart</h1>
             <StockChart ticker="TSLA" />
         </div>
