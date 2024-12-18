@@ -10,6 +10,7 @@ function App() {
     const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
+    const [holdings, setHoldings] = useState([]);
     const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
@@ -19,6 +20,7 @@ function App() {
         fetchPortfolioData();
         fetchStockBalance();
         fetchDate();
+        fetchHoldings();
     }, []);
 
 
@@ -35,7 +37,6 @@ function App() {
                 params: { username: username }
             });
             const balance = parseFloat(response.data.balance);
-            console.log(balance);
             setPortfolio((prevPortfolio) => ({
                 ...prevPortfolio,
                 balance: balance,
@@ -52,7 +53,6 @@ function App() {
                 params: { username: username }
             });
             const stock_balance = parseFloat(response.data.stock_holdings_value);
-            console.log(stock_balance);
             setStockBalance(stock_balance);
         } catch (error) {
             console.error('Error fetching portfolio data:', error);
@@ -64,6 +64,23 @@ function App() {
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date');
             setDate(format(new Date(response.data.max_date), 'MMMM dd, yyyy'));
+        } catch (error) {
+            console.error('Error fetching date: ', error);
+        }
+    };
+
+    
+    const fetchHoldings = async () => {
+        try {
+            // Fetch user balance
+            const response = await axios.get('http://localhost:5000/holdings', {
+                params: { username: username }
+            });
+            const holdings = response.data.map(item => ({
+                ticker: item.ticker,
+                quantity: item.quantity
+            }));
+            setHoldings(holdings)
         } catch (error) {
             console.error('Error fetching date: ', error);
         }
@@ -120,6 +137,14 @@ function App() {
             </ul>
 
             <h3>Your Holdings</h3>
+            <ul className="bubble-list">
+                {holdings.map((item, index) => (
+                    <li key={index} className="bubble">
+                        <span className="ticker">{item.ticker}</span>
+                        <span className="quantity">{item.quantity}</span>
+                    </li>
+                ))}
+            </ul>
             <ul>
                 {Object.keys(portfolio.holdings).map((ticker) => (
                     <li key={ticker}>

@@ -58,9 +58,21 @@ app.get('/stocks', (req, res) => {
     });
 });
 
+// Routes
+app.get('/holdings', (req, res) => {
+    const username = req.query.username;
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+    db.query('SELECT ticker, quantity FROM holdings WHERE username = ?', [username], (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
 app.get('/balance', (req, res) => {
     const username = req.query.username; // Extract username from query
-    console.log(username)
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
@@ -109,14 +121,12 @@ app.get('/stock_balance', (req, res) => {
         }
 
         res.json(results[0]);
-        console.log(results[0]);
     });
 });
 
 
 app.post('/buy', (req, res) => {
     const { username, ticker, quantity } = req.body;
-    console.log(req.body)
     // Get stock price
     db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
         if (err) throw err;
@@ -155,7 +165,6 @@ app.post('/sell', (req, res) => {
         (err, results) => {
             if (err) throw err;
             const currentQuantity = results.length ? results[0].quantity : 0;
-            console.log(results)
             if (currentQuantity >= quantity) {
                 // Get stock price and update user balance and holdings
                 db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
