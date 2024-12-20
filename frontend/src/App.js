@@ -11,26 +11,43 @@ function App() {
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
     const [holdings, setHoldings] = useState([]);
+    const [ticker, setTicker] = useState("TSLA");
     const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchStocks();
+
         fetchPortfolioData();
         fetchStockBalance();
         fetchDate();
         fetchHoldings();
-    }, []);
+        if (date) {
+            //fetchPriceDifference();
+            fetchStocks();
+        }
+    }, [date]);
 
 
     const fetchStocks = async () => {
+
+        if (!date) {
+            console.log("Date is not provided");
+            return;  // Exit the function early if date is not available
+        }
         const response = await axios.get('http://localhost:5000/stocks');
-        const stocks = response.data.map(item => ({
-            ticker: item.ticker,
-            price: item.price
-        }));
-        console.log(stocks)
+        const stocks = [];
+        console.log("date" + date)
+
+            for (const item of response.data) {
+                const priceDifference = await fetchPriceDifference(item.ticker, date);
+                stocks.push({
+                    ticker: item.ticker,
+                    price: item.price,
+                    priceDifference,
+                });
+                console.log(priceDifference)
+            }
         setStocks(stocks);
     };
 
@@ -63,11 +80,29 @@ function App() {
         }
     };
 
+    const fetchPriceDifference = async (ticker, date) => {
+        try {
+            console.log(ticker)
+            console.log(date)
+            const response = await axios.post('http://localhost:5000/price-difference', {
+                params: { ticker: ticker,
+                          date: date,
+                 }
+            });
+            console.log(response)
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching price-diff data:', error);
+        }
+    };
+    
     const fetchDate = async () => {
         try {
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date');
-            setDate(format(new Date(response.data.max_date), 'MMMM dd, yyyy'));
+            setDate(response.data.max_date.split('T')[0])//yyyy-mm-dd format
+
+            //setDate(format(new Date(response.data.max_date), 'MMMM dd, yyyy'));
         } catch (error) {
             console.error('Error fetching date: ', error);
         }
@@ -135,6 +170,7 @@ function App() {
                     <li key={index} className="stock-li">
                         <span className="stock-ticker">{stock.ticker}</span>: 
                         <span className="stock-quantity"> ${stock.price}</span>
+                        <span className="stock-quantity"> ${stock.priceDifference}</span>
                         <div className="button-group">
                             <button onClick={() => handleBuy(stock.ticker)} className="stock-button">
                                 Buy

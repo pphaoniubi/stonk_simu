@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '123456',
+    password: '12345678pP!',
     database: 'stock_simu_db',
 });
 
@@ -87,6 +87,46 @@ app.get('/balance', (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        res.json(results[0]);
+    });
+});
+
+app.post('/price-difference', (req, res) => {
+    const ticker = req.body.params.ticker;
+    const date = req.body.params.date;
+    if (!ticker) {
+        return res.status(400).json({ error: 'Ticker and Date is required' });
+    }
+
+
+    db.query(`SELECT 
+                hp1.ticker,
+                hp1.date AS today_date,
+                hp2.date AS yesterday_date,
+                (hp1.close - hp2.close) AS price_difference
+            FROM 
+                historical_prices hp1
+            JOIN 
+                historical_prices hp2
+                ON hp1.ticker = hp2.ticker
+                AND hp1.ticker = ?
+                AND hp1.date = ?
+                AND hp2.date = (
+                    SELECT MAX(hp2_inner.date)
+                    FROM historical_prices hp2_inner
+                    WHERE hp2_inner.ticker = hp1.ticker
+                    AND hp2_inner.date < hp1.date
+                )
+            WHERE 
+                hp1.date = ?`, [ticker, date, date], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Database query error' });
+        }
+        console.log(results[0])
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Price not found' });
+        }
         res.json(results[0]);
     });
 });
