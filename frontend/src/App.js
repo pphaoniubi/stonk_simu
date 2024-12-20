@@ -150,7 +150,10 @@ function App() {
 
     return (
         <div>
-            <h2 className="date">{date}</h2>
+            <div className="dateContainer">
+                <h2 className="date">{date}</h2>
+                <button onClick={fastForward} className="fastFButton">Next</button>
+            </div>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <h3>Available Stocks</h3>
@@ -181,7 +184,6 @@ function App() {
                     </li>
                 ))}
             </ul>
-            <button onClick={fastForward}>Next</button>
             <h1>Stock Chart</h1>
             <StockChart ticker="TSLA" />
         </div>

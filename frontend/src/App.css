@@ -1,8 +1,4 @@
-.date {
-  width: 50%; /* Set a specific width */
-  margin: 20px auto; /* Horizontally center */
-  text-align: center; /* Optional: Center text inside the div */
-}
+
 
 /* Container styles */
 .bubble-list {
@@ -58,13 +54,23 @@
   list-style: none; /* Remove bullets/numbers */
   padding: 0; /* Remove padding for alignment */
   margin: 0; /* Remove any default margin */
+  display: flex;
+  flex-wrap: wrap; /* Allow the bubbles to wrap on small screens */
+  gap: 10px; /* Space between bubbles */
 }
 
 .stock-li {
-  display: flex; /* Align content horizontally */
-  align-items: center; /* Vertically center items */
-  gap: 10px; /* Add spacing between elements */
-  margin-bottom: 10px; /* Add spacing between rows */
+  background-color: #f0f0f0; /* Light gray background */
+  border-radius: 30px; /* Make the item bubble-shaped */
+  padding: 10px 20px; /* Add padding to the bubble */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  align-items: center; /* Align text vertically */
+  justify-content: space-between; /* Spread out ticker and price */
+  font-size: 14px;
+  width: fit-content; /* Let the bubble size fit the content */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+
 }
 
 .stock-button {
@@ -78,4 +84,28 @@
 
 .stock-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
+}
+
+.dateContainer {
+  display: flex;
+  justify-content: center; /* Centers the items horizontally */
+  align-items: center; /* Centers the items vertically */
+}
+.date {
+  margin-right: 10px; /* Optional: Adds some space between the elements */
+}
+.fastFButton {
+  padding: 10px 20px; /* Add padding around the text */
+  font-size: 16px; /* Set the font size */
+  background-color: #007bff; /* Set background color (Bootstrap primary color) */
+  color: white; /* Text color */
+  border: none; /* Remove the default border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor to a pointer on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  margin-left: 10px;
+}
+
+.fastFButton:hover {
+  background-color: #0056b3; /* Darker shade when hovering */
 }
