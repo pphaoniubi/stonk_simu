@@ -24,6 +24,16 @@ db.connect((err) => {
         console.error('MySQL connection error:', err);
         return;
     }
+    console.log(new Date().toString());
+  // Set the session time zone to the system's time zone
+  db.query('SET time_zone = SYSTEM', (err, result) => {
+    if (err) {
+      console.error('Error setting time zone:', err);
+      return;
+    }
+
+    console.log('MySQL session time zone set to SYSTEM');
+  });
     console.log('Connected to MySQL database.');
 });
 
@@ -100,10 +110,10 @@ app.post('/price-difference', (req, res) => {
 
 
     db.query(`SELECT 
-                hp1.ticker,
+                hp1.ticker, 
                 hp1.date AS today_date,
                 hp2.date AS yesterday_date,
-                (hp1.close - hp2.close) AS price_difference
+                (hp1.close - hp2.close)/hp2.close*100 AS price_difference
             FROM 
                 historical_prices hp1
             JOIN 
@@ -246,6 +256,7 @@ app.get('/get-date', (req, res) => {
         `SELECT MAX(date) AS max_date FROM historical_prices WHERE ticker = 'AAPL' AND updated = 1`,
         (err, results) => {
             if (err) throw err;
+            console.log(results[0])
             res.json(results[0]);
         }
     );

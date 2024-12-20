@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StockChart from './StockChart';
-import { format } from 'date-fns';
 import "./App.css"
 
-
+const moment = require('moment-timezone');
 function App() {
     const [stocks, setStocks] = useState([]);
     const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
@@ -17,13 +16,11 @@ function App() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-
         fetchPortfolioData();
         fetchStockBalance();
         fetchDate();
         fetchHoldings();
         if (date) {
-            //fetchPriceDifference();
             fetchStocks();
         }
     }, [date]);
@@ -39,11 +36,13 @@ function App() {
 
             for (const item of response.data) {
                 const priceDifference = await fetchPriceDifference(item.ticker, date);
+                if(priceDifference){
                 stocks.push({
                     ticker: item.ticker,
                     price: item.price,
-                    priceDifference,
+                    priceDifference: priceDifference.toFixed(2),
                 });
+            }
                 console.log(priceDifference)
             }
         setStocks(stocks);
@@ -95,7 +94,8 @@ function App() {
         try {
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date');
-            setDate(response.data.max_date.split('T')[0])//yyyy-mm-dd format
+            const kstDate = moment.utc(response.data.max_date).tz('Asia/Seoul').format('YYYY-MM-DD');
+            setDate(kstDate)    //yyyy-mm-dd format
         } catch (error) {
             console.error('Error fetching date: ', error);
         }
@@ -159,7 +159,7 @@ function App() {
                     <li key={index} className="stock-li">
                         <span className="stock-ticker">{stock.ticker}</span>: 
                         <span className="stock-quantity"> ${stock.price}</span>
-                        <span className="stock-quantity"> {stock.priceDifference.toFixed(2)}%</span>
+                        <span className="stock-quantity"> {stock.priceDifference}%</span>
                         <div className="button-group">
                             <button onClick={() => handleBuy(stock.ticker)} className="stock-button">
                                 Buy
