@@ -30,14 +30,12 @@ function App() {
 
 
     const fetchStocks = async () => {
-
         if (!date) {
             console.log("Date is not provided");
             return;  // Exit the function early if date is not available
         }
         const response = await axios.get('http://localhost:5000/stocks');
         const stocks = [];
-        console.log("date" + date)
 
             for (const item of response.data) {
                 const priceDifference = await fetchPriceDifference(item.ticker, date);
@@ -82,15 +80,12 @@ function App() {
 
     const fetchPriceDifference = async (ticker, date) => {
         try {
-            console.log(ticker)
-            console.log(date)
             const response = await axios.post('http://localhost:5000/price-difference', {
                 params: { ticker: ticker,
                           date: date,
                  }
             });
-            console.log(response)
-            return response.data;
+            return response.data.price_difference;
         } catch (error) {
             console.error('Error fetching price-diff data:', error);
         }
@@ -101,8 +96,6 @@ function App() {
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date');
             setDate(response.data.max_date.split('T')[0])//yyyy-mm-dd format
-
-            //setDate(format(new Date(response.data.max_date), 'MMMM dd, yyyy'));
         } catch (error) {
             console.error('Error fetching date: ', error);
         }
@@ -143,18 +136,14 @@ function App() {
 
     const fastForward = async () => {
         try {
-          // Clear previous errors
           setError(null);
     
-          // Replace the URL with your endpoint
           const res = await axios.post("http://localhost:5000/update-prices");
-    
-          // Update state with response data
+
           setResponse(res.data);
 
           window.location.reload();
         } catch (err) {
-          // Handle errors
           setError(err.message);
         }
       };
@@ -170,7 +159,7 @@ function App() {
                     <li key={index} className="stock-li">
                         <span className="stock-ticker">{stock.ticker}</span>: 
                         <span className="stock-quantity"> ${stock.price}</span>
-                        <span className="stock-quantity"> ${stock.priceDifference}</span>
+                        <span className="stock-quantity"> {stock.priceDifference.toFixed(2)}%</span>
                         <div className="button-group">
                             <button onClick={() => handleBuy(stock.ticker)} className="stock-button">
                                 Buy
