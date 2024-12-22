@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import StockChart from './StockChart';
-import "./App.css"
+import "./StockPrice.css"
 
 const moment = require('moment-timezone');
 function StockPrice() {
@@ -17,7 +16,6 @@ function StockPrice() {
             fetchStocks();
         }
     }, [date]);
-
 
     const fetchStocks = async () => {
         if (!date) {
@@ -40,7 +38,6 @@ function StockPrice() {
             }
         setStocks(stocks);
     };
-
 
     const fetchPriceDifference = async (ticker, date) => {
         try {
@@ -65,9 +62,6 @@ function StockPrice() {
             console.error('Error fetching date: ', error);
         }
     };
-
-
-
 
     const handleBuy = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
@@ -113,7 +107,7 @@ function StockPrice() {
                             <span className="stock-ticker">{stock.ticker}</span>
                             <span className="stock-quantity"> ${stock.price}</span>
                             <span
-                            className={`stock-quantity ${stock.priceDifference >= 0 ? 'positive' : 'negative'}`}
+                            className={`${stock.priceDifference >= 0 ? 'positive' : 'negative'}`}
                             > {stock.priceDifference}%</span>
                         </div>
 

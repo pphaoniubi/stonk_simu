@@ -1,0 +1,82 @@
+/* .stock-ul styles */
+.stock-ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+/* .stock-li styles */
+.stock-li {
+  background-color: #f1f1f1;
+  border-radius: 25px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+/* Button styling */
+.stock-button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff; /* Light blue color */
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.stock-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Positive and Negative price difference */
+.stock-info .positive {
+  background-color: #4caf50; /* Green for positive */
+  color: white;
+}
+
+.stock-info .negative {
+  background-color: #f44336; /* Red for negative */
+  color: white;
+}
+
+/* Button group alignment */
+.button-group {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Stock Info flex layout */
+.stock-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Hover effect for list items */
+.stock-li:hover {
+  transform: translateY(-5px); /* Lift on hover */
+}
+
+/* Fast Forward Button */
+.fastFButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.fastFButton:hover {
+  background-color: #0056b3;
+}
