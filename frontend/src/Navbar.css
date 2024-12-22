@@ -16,3 +16,9 @@
     font-weight: bold;
 }
 
+.logo {
+    display: flex;
+    gap: 40px; /* Adjust the spacing between anchor tags */
+  }
+  
+
