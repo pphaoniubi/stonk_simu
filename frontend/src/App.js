@@ -160,9 +160,14 @@ function App() {
             <ul className="stock-ul">
                 {stocks.map((stock, index) => (
                     <li key={index} className="stock-li">
-                        <span className="stock-ticker">{stock.ticker}</span>: 
-                        <span className="stock-quantity"> ${stock.price}</span>
-                        <span className="stock-quantity"> {stock.priceDifference}%</span>
+                        <div className="stock-info">
+                            <span className="stock-ticker">{stock.ticker}</span>
+                            <span className="stock-quantity"> ${stock.price}</span>
+                            <span
+                            className={`stock-quantity ${stock.priceDifference >= 0 ? 'positive' : 'negative'}`}
+                            > {stock.priceDifference}%</span>
+                        </div>
+
                         <div className="button-group">
                             <button onClick={() => handleBuy(stock.ticker)} className="stock-button">
                                 Buy

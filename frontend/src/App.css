@@ -49,28 +49,23 @@
   color: #555; /* Medium gray for quantity */
 }
 
-
 .stock-ul {
-  list-style: none; /* Remove bullets/numbers */
-  padding: 0; /* Remove padding for alignment */
-  margin: 0; /* Remove any default margin */
   display: flex;
-  flex-wrap: wrap; /* Allow the bubbles to wrap on small screens */
-  gap: 10px; /* Space between bubbles */
+  flex-direction: column; /* Aligns items vertically */
+  gap: 10px; /* Space between the bubbles */
+  padding: 0;
+  list-style: none; /* Removes default list styles */
 }
 
 .stock-li {
-  background-color: #f0f0f0; /* Light gray background */
-  border-radius: 30px; /* Make the item bubble-shaped */
-  padding: 10px 20px; /* Add padding to the bubble */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #f1f1f1; /* Light bubble background */
+  border-radius: 25px; /* Rounded corners */
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   display: flex;
-  align-items: center; /* Align text vertically */
-  justify-content: space-between; /* Spread out ticker and price */
-  font-size: 14px;
-  width: fit-content; /* Let the bubble size fit the content */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
-
+  flex-direction: column; /* Stack content vertically within each item */
+  align-items: center; /* Center align content inside the bubble */
+  transition: transform 0.2s ease; /* Smooth hover effect */
 }
 
 .stock-button {
@@ -86,6 +81,51 @@
   background-color: #0056b3; /* Darker blue on hover */
 }
 
+.stock-info {
+  display: flex; /* Aligns items in a row */
+  align-items: center; /* Vertically aligns items in the center */
+  gap: 10px; /* Optional: Adds spacing between the spans */
+}
+
+.positive {
+  background-color: #4caf50; /* Green */
+  color: white;
+}
+
+.negative {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+.stock-li:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+}
+
+.stock-ticker, .stock-quantity {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.button-group {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.stock-button {
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.stock-button:hover {
+  background-color: #45a049;
+}
+
 .dateContainer {
   display: flex;
   justify-content: center; /* Centers the items horizontally */
@@ -94,6 +134,7 @@
 .date {
   margin-right: 10px; /* Optional: Adds some space between the elements */
 }
+
 .fastFButton {
   padding: 10px 20px; /* Add padding around the text */
   font-size: 16px; /* Set the font size */
