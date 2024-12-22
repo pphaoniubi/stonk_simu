@@ -5,6 +5,10 @@
   gap: 10px;
   padding: 0;
   list-style: none;
+  justify-content: center; /* Center list items vertically */
+  align-items: center; /* Center list items horizontally */
+  width: 100%; /* Ensure full width for centering */
+  margin: 0 auto; /* Center the list horizontally */
 }
 
 /* .stock-li styles */
@@ -14,9 +18,11 @@
   padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between; /* Spread out content in the list item */
   transition: transform 0.2s ease;
+  width: 80%; /* Adjust the width to control how wide each item is */
 }
 
 /* Button styling */
@@ -34,12 +40,12 @@
 }
 
 /* Positive and Negative price difference */
-.stock-info .positive {
+.positive {
   background-color: #4caf50; /* Green for positive */
   color: white;
 }
 
-.stock-info .negative {
+.negative {
   background-color: #f44336; /* Red for negative */
   color: white;
 }
@@ -48,6 +54,7 @@
 .button-group {
   margin-top: 10px;
   display: flex;
+  flex-direction: row;
   gap: 10px;
   justify-content: center;
 }
@@ -57,6 +64,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: flex-start; /* Align the stock info to the left */
+  width: 80%; /* Ensure it doesn't take up the whole space */
 }
 
 /* Hover effect for list items */
