@@ -235,6 +235,56 @@ app.post('/sell', (req, res) => {
     );
 });
 
+app.post('/sell-all', (req, res) => {
+    const { username, ticker } = req.body;
+    // Check user holdings
+    db.query(
+        'SELECT quantity FROM holdings WHERE username = ? AND ticker = ?',
+        [username, ticker],
+        (err, results) => {
+            if (err) throw err;
+            const quantity = results.length ? results[0].quantity : 0;
+                // Get stock price and update user balance and holdings
+                db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
+                    if (err) throw err;
+                    const price = results[0].price;
+                    const revenue = price * quantity;
+                    
+                    db.query('UPDATE users SET balance = balance + ? WHERE username = ?', [revenue, username]);
+                    db.query(
+                        'UPDATE holdings SET quantity = quantity - ? WHERE username = ? AND ticker = ?',
+                        [quantity, username, ticker],
+                        (err) => {
+                            if (err) throw err;
+                            res.json({ success: true });
+                        }
+                    );
+                });
+        }
+    );
+});
+
+app.post('/sell-everything', (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+    // Check user holdings
+    db.query(
+        'UPDATE holdings SET quantity = 0 WHERE username = ?',
+        [username],
+        (err, results) => {
+            if (err) {
+                console.error(err);  // Log the error for server-side debugging
+                return res.status(500).json({ error: 'Internal server error' });  // Return an error response to the client
+            }
+            res.json({ success: true, message: 'All holdings sold' });
+        });
+});
+
+
 app.get('/historical/:ticker', (req, res) => {
   const { ticker } = req.params;
 

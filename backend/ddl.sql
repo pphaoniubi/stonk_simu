@@ -10,12 +10,10 @@ CREATE TABLE users (
     stonk_balance DECIMAL(10, 2)
 );
 
-
 CREATE TABLE stonks (
     ticker VARCHAR(10) PRIMARY KEY,
     price DECIMAL(10, 2)
 );
-
 
 CREATE TABLE holdings (
     username VARCHAR(50),
@@ -52,7 +50,3 @@ INSERT INTO stonks (ticker, price) VALUES
 ('NFLX', NULL),	
 ('META', NULL),
 ('NVDA', NULL);
-
-
-
-select * from historical_prices;

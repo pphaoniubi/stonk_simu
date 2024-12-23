@@ -81,6 +81,7 @@ function StockPrice() {
         } catch(error){
             alert(error.response.data.message);
         }
+        window.location.reload();
     };
 
     const handleSell = async (ticker) => {
@@ -103,6 +104,7 @@ function StockPrice() {
         } catch(error){
             alert(error.response.data.message);
         }
+        window.location.reload();
     };
 
     const fastForward = async () => {

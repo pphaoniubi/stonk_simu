@@ -92,6 +92,7 @@ function SimulatorMainPage() {
         if (!response.data.success){
             alert(response.data.message);
         }
+        window.location.reload();
     };
 
     const handleSell = async (ticker) => {
@@ -110,6 +111,25 @@ function SimulatorMainPage() {
         if (!response.data.success){
             alert(response.data.message);
         }
+        window.location.reload();
+    };
+
+    const handleSellAll = async (ticker) => {
+
+        const response = await axios.post('http://localhost:5000/sell-all', { username, ticker });
+        if (!response.data.success){
+            alert(response.data.message);
+        }
+        window.location.reload();
+    };
+
+    const handleSellEverything = async (ticker) => {
+
+        const response = await axios.post('http://localhost:5000/sell-everything', { username });
+        if (!response.data.success){
+            alert(response.data.message);
+        }
+        window.location.reload();
     };
 
     const fastForward = async () => {
@@ -132,8 +152,11 @@ function SimulatorMainPage() {
                 <h2 className="date">{date}</h2>
                 <button onClick={fastForward} className="fastFButton">Next</button>
             </div>
-            <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
+            <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(portfolio.balance.toFixed(2))}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
+            <button onClick={() => handleSellEverything()} className="stock-button">
+                                Sell Everything
+            </button>
             <div className="holdings-container">
             {holdings.length > 0 && <h2>Your Holdings</h2>}
             <ul className="bubble-list">
@@ -149,6 +172,9 @@ function SimulatorMainPage() {
                             </button>
                             <button onClick={() => handleSell(item.ticker)} className="stock-button">
                                 Sell
+                            </button>
+                            <button onClick={() => handleSellAll(item.ticker)} className="stock-button">
+                                Sell All
                             </button>
                     </div>
                 </li>
