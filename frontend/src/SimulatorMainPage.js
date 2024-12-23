@@ -103,15 +103,17 @@ function SimulatorMainPage() {
             </div>
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
-            <h3>Your Holdings</h3>
+            <div className="holdings-container">
+            <h2>Your Holdings</h2>
             <ul className="bubble-list">
                 {holdings.map((item, index) => (
-                    <li key={index} className="bubble">
-                        <span className="ticker">{item.ticker}</span>
-                        <span className="quantity">{item.quantity}</span>
-                    </li>
+                <li key={index} className="bubble">
+                    <span className="ticker">{item.ticker}</span>
+                    <span className="quantity">{item.quantity}</span>
+                </li>
                 ))}
             </ul>
+            </div>
             <h1>Stock Chart</h1>
             <StockChart ticker="TSLA" />
         </div>

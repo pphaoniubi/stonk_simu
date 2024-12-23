@@ -64,7 +64,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: flex-start; /* Align the stock info to the left */
   width: 80%; /* Ensure it doesn't take up the whole space */
 }
 

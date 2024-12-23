@@ -1,11 +1,27 @@
-/* Container styles */
+.holdings-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  width: 80%;
+  margin: 0 auto; /* Ensures the container itself is centered */
+}
+
+h3 {
+  margin: 0;
+  padding: 10px 0;
+  text-align: left; /* Align the heading text to the left */
+  width: 100%; /* Ensure it takes full width */
+}
+
 .bubble-list {
+    width: 100%;
     display: flex; /* Arrange items in a row */
     flex-direction: column; 
     gap: 10px; /* Add spacing between the bubbles */
     list-style: none; /* Remove default list styling */
     padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
+    margin: 0 auto; /* Remove default margin */
     flex-wrap: wrap; /* Allow wrapping for smaller screens */
     justify-content: center; /* Center items horizontally */
   }
@@ -52,6 +68,7 @@
     justify-content: center; /* Centers the items horizontally */
     align-items: center; /* Centers the items vertically */
   }
+
   .date {
     margin-right: 10px; /* Optional: Adds some space between the elements */
   }
