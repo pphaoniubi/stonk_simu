@@ -33,7 +33,7 @@ h3 {
     justify-content: center; /* Center content vertically */
     align-items: center; /* Center content horizontally */
     padding: 10px 15px; /* Space inside the bubble */
-    background-color: #f0f0f0; /* Light gray background */
+    background-color: #f1f1f1; /* Light gray background */
     border-radius: 20px; /* Rounded corners for bubble effect */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
     font-family: Arial, sans-serif; /* Optional: Change font */
@@ -50,17 +50,23 @@ h3 {
     transform: scale(1.05); /* Slightly enlarge bubble on hover */
   }
   
+  .link-container {
+    text-decoration: none; /* Removes underline from the link */
+  }
+
   /* Ticker styling */
   .ticker {
     font-weight: bold; /* Make the ticker bold */
-    font-size: 16px; /* Slightly larger text */
+    font-size: 22px; /* Slightly larger text */
     color: #333; /* Darker text for ticker */
+    margin-right: 5px;
   }
   
   /* Quantity styling */
   .quantity {
-    font-size: 12px; /* Smaller text for quantity */
-    color: #555; /* Medium gray for quantity */
+    font-size: 22px; /* Smaller text for quantity */
+    color: #000000; /* Medium gray for quantity */
+    margin-left: 4px; /* Adjust the value as needed */
   }
 
   .dateContainer {

@@ -104,15 +104,14 @@ function SimulatorMainPage() {
             <ul className="bubble-list">
                 {holdings.map((item, index) => (
                 <li key={index} className="bubble">
-                    <Link to={`/stock/${item.ticker}`}>
-                        <span className="ticker">{item.ticker}</span>
+                    <Link to={`/stock/${item.ticker}`} className="link-container">
+                        <span className="ticker">{item.ticker} :</span>
                         <span className="quantity">{item.quantity}</span>
                     </Link>
                 </li>
                 ))}
             </ul>
             </div>
-            <h1>Stock Chart</h1>
         </div>
     );
 }

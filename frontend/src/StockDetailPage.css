@@ -1,14 +1,18 @@
-.centered-heading {
-    text-align: center; /* Center horizontally */
-    margin: 0; /* Optional: remove any default margins */
-    padding: 20px; /* Optional: add some padding around the text */
-  }
-  
   /* If you need to center within a container with a fixed height */
   .centered-container {
     display: flex; /* Use Flexbox for vertical and horizontal centering */
+    flex-direction: column; /* Stack items vertically */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    height: 100vh; /* Take up full viewport height (or any specific height) */
+    margin: 0 auto;
+    width: 100%; /* Adjust width as needed */
+    max-height: 600px;
+    margin-top: 30px;
   }
   
+  .centered-heading {
+    text-align: center; /* Center horizontally */
+    margin: 0; /* Optional: remove any default margins */
+    width: 100%; /* Make sure the element takes up the full width */
+    padding: 20px; /* Optional: add some padding around the text */
+  }

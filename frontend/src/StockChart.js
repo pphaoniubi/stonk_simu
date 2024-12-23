@@ -130,7 +130,7 @@ function StockChart({ ticker }) {
         };
     }, [ticker]);
 
-    return <canvas ref={canvasRef} width="300" height="200"></canvas>;
+    return <canvas ref={canvasRef} width="800" height="400"></canvas>;
 }
 
 export default StockChart;
