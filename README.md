@@ -5,4 +5,4 @@ logic when buying more than your balance, or selling more than your shares<br>
 technical indicators on graph<br>
 next 10 weeks in a row<br>
 start over button<br>
-<br>
+styling the buy/sell prompt<br>
