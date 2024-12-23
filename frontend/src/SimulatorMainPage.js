@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StockChart from './StockChart';
 import "./SimulatorMainPage.css"
+import { Link } from 'react-router-dom';
 
 const moment = require('moment-timezone');
 function SimulatorMainPage() {
@@ -19,9 +20,6 @@ function SimulatorMainPage() {
         fetchDate();
         fetchHoldings();
     }, []);
-
-
-
 
     const fetchPortfolioData = async () => {
         try {
@@ -63,7 +61,6 @@ function SimulatorMainPage() {
         }
     };
 
-    
     const fetchHoldings = async () => {
         try {
             // Fetch user balance
@@ -79,7 +76,6 @@ function SimulatorMainPage() {
             console.error('Error fetching date: ', error);
         }
     };
-
 
     const fastForward = async () => {
         try {
@@ -108,14 +104,15 @@ function SimulatorMainPage() {
             <ul className="bubble-list">
                 {holdings.map((item, index) => (
                 <li key={index} className="bubble">
-                    <span className="ticker">{item.ticker}</span>
-                    <span className="quantity">{item.quantity}</span>
+                    <Link to={`/stock/${item.ticker}`}>
+                        <span className="ticker">{item.ticker}</span>
+                        <span className="quantity">{item.quantity}</span>
+                    </Link>
                 </li>
                 ))}
             </ul>
             </div>
             <h1>Stock Chart</h1>
-            <StockChart ticker="TSLA" />
         </div>
     );
 }

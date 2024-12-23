@@ -108,7 +108,6 @@ app.post('/price-difference', (req, res) => {
         return res.status(400).json({ error: 'Ticker and Date is required' });
     }
 
-
     db.query(`SELECT 
                 hp1.ticker, 
                 hp1.date AS today_date,
@@ -172,7 +171,6 @@ app.get('/stock_balance', (req, res) => {
         res.json(results[0]);
     });
 });
-
 
 app.post('/buy', (req, res) => {
     const { username, ticker, quantity } = req.body;
@@ -314,7 +312,6 @@ app.post('/update-prices', (req, res) => {
       );
   });
 });
-
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
