@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./StockPrice.css"
+import { Link } from 'react-router-dom';
 
 const moment = require('moment-timezone');
 function StockPrice() {
@@ -104,11 +105,13 @@ function StockPrice() {
                 {stocks.map((stock, index) => (
                     <li key={index} className="stock-li">
                         <div className="stock-info">
+                        <Link to={`/stock/${stock.ticker}`} className="link-container">
                             <span className="stock-ticker">{stock.ticker}</span>
                             <span className="stock-quantity"> ${stock.price}</span>
                             <span
                             className={`${stock.priceDifference >= 0 ? 'positive' : 'negative'}`}
                             > {stock.priceDifference}%</span>
+                        </Link>
                         </div>
 
                         <div className="button-group">

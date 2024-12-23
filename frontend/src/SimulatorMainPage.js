@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import StockChart from './StockChart';
 import "./SimulatorMainPage.css"
 import { Link } from 'react-router-dom';
 
@@ -77,6 +76,22 @@ function SimulatorMainPage() {
         }
     };
 
+    const handleBuy = async (ticker) => {
+        const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
+        const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
+        if (!response.data.success){
+            alert(response.data.message);
+        }
+    };
+
+    const handleSell = async (ticker) => {
+        const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
+        const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
+        if (!response.data.success){
+            alert(response.data.message);
+        }
+    };
+
     const fastForward = async () => {
         try {
           setError(null);
@@ -100,7 +115,7 @@ function SimulatorMainPage() {
             <h2>Balance: ${portfolio.balance.toFixed(2)}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <div className="holdings-container">
-            <h2>Your Holdings</h2>
+            {holdings.length > 0 && <h2>Your Holdings</h2>}
             <ul className="bubble-list">
                 {holdings.map((item, index) => (
                 <li key={index} className="bubble">
@@ -108,6 +123,14 @@ function SimulatorMainPage() {
                         <span className="ticker">{item.ticker} :</span>
                         <span className="quantity">{item.quantity}</span>
                     </Link>
+                    <div className="button-group">
+                            <button onClick={() => handleBuy(item.ticker)} className="stock-button">
+                                Buy
+                            </button>
+                            <button onClick={() => handleSell(item.ticker)} className="stock-button">
+                                Sell
+                            </button>
+                    </div>
                 </li>
                 ))}
             </ul>

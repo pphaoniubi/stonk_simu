@@ -94,3 +94,26 @@ h3 {
   .fastFButton:hover {
     background-color: #0056b3; /* Darker shade when hovering */
   }
+
+  /* Button group alignment */
+.button-group {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Button styling */
+.stock-button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff; /* Light blue color */
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.stock-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

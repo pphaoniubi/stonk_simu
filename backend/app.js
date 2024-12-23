@@ -24,7 +24,6 @@ db.connect((err) => {
         console.error('MySQL connection error:', err);
         return;
     }
-    console.log(new Date().toString());
   // Set the session time zone to the system's time zone
   db.query('SET time_zone = SYSTEM', (err, result) => {
     if (err) {
@@ -77,7 +76,8 @@ app.get('/holdings', (req, res) => {
 
     db.query('SELECT ticker, quantity FROM holdings WHERE username = ?', [username], (err, results) => {
         if (err) throw err;
-        res.json(results);
+        const filteredResults = results.filter(item => item.quantity !== 0);
+        res.json(filteredResults);
     });
 });
 
@@ -132,7 +132,6 @@ app.post('/price-difference', (req, res) => {
             console.error(err);
             return res.status(500).json({ error: 'Database query error' });
         }
-        console.log(results[0])
         if (results.length === 0) {
             return res.status(404).json({ error: 'Price not found' });
         }
@@ -254,15 +253,12 @@ app.get('/get-date', (req, res) => {
         `SELECT MAX(date) AS max_date FROM historical_prices WHERE ticker = 'AAPL' AND updated = 1`,
         (err, results) => {
             if (err) throw err;
-            console.log(results[0])
             res.json(results[0]);
         }
     );
 });
 
 app.post('/update-prices', (req, res) => {
-  console.log('Updating stock prices...');
-  
   // Get the current date from the database
   db.query('SELECT MIN(date) AS min_date FROM historical_prices WHERE updated = 0', (err, results) => {
       if (err) {
