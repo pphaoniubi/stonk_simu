@@ -78,6 +78,16 @@ function SimulatorMainPage() {
 
     const handleBuy = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
+        if (quantity === null) {
+            return;  // Exit the function and do nothing
+        }
+    
+        // Check if the entered quantity is a valid number
+        const quantityInt = parseInt(quantity);
+        if (isNaN(quantityInt) || quantityInt <= 0) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
         const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
         if (!response.data.success){
             alert(response.data.message);
@@ -86,6 +96,16 @@ function SimulatorMainPage() {
 
     const handleSell = async (ticker) => {
         const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
+        if (quantity === null) {
+            return;  // Exit the function and do nothing
+        }
+    
+        // Check if the entered quantity is a valid number
+        const quantityInt = parseInt(quantity);
+        if (isNaN(quantityInt) || quantityInt <= 0) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
         const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
         if (!response.data.success){
             alert(response.data.message);
