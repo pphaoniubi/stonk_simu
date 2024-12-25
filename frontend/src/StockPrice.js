@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./StockPrice.css"
 import { Link } from 'react-router-dom';
+import { useUser } from "./UserContext";
 
 const moment = require('moment-timezone');
 function StockPrice() {
     const [stocks, setStocks] = useState([]);
     const [date, setDate] = useState(null);
-    const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
+
+    const { username } = useUser();
 
     useEffect(() => {
         fetchDate();
@@ -113,7 +115,7 @@ function StockPrice() {
         try {
           setError(null);
     
-          const res = await axios.post("http://localhost:5000/update-prices");
+          const res = await axios.post("http://localhost:5000/update-prices", { username: username });
 
           setResponse(res.data);
 

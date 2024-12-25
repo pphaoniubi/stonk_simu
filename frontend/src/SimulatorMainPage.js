@@ -6,33 +6,30 @@ import { useUser } from "./UserContext";
 
 const moment = require('moment-timezone');
 function SimulatorMainPage() {
-    const [portfolio, setPortfolio] = useState({ balance: 10, holdings: {} });
-    const [stockBalance, setStockBalance] = useState(10);
+    const [balance, setBalance] = useState(0);
+    const [stockBalance, setStockBalance] = useState(0);
     const [date, setDate] = useState(null);
     const [holdings, setHoldings] = useState([]);
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
     const { username } = useUser();
-    
+
     useEffect(() => {
-        fetchPortfolioData();
+        fetchStockHolding();
         fetchStockBalance();
         fetchDate();
         fetchHoldings();
     }, []);
 
-    const fetchPortfolioData = async () => {
+    const fetchStockHolding = async () => {
         try {
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/balance', {
                 params: { username: username }
             });
             const balance = parseFloat(response.data.balance);
-            setPortfolio((prevPortfolio) => ({
-                ...prevPortfolio,
-                balance: balance,
-            }));
+            setBalance(balance)
         } catch (error) {
             console.error('Error fetching portfolio data:', error);
         }
@@ -157,7 +154,7 @@ function SimulatorMainPage() {
                 <h2 className="date">{date}</h2>
                 <button onClick={fastForward} className="fastFButton">Next</button>
             </div>
-            <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(portfolio.balance.toFixed(2))}</h2>
+            <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance.toFixed(2))}</h2>
             <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
             <button onClick={() => handleSellEverything()} className="stock-button">
                                 Sell Everything

@@ -5,10 +5,12 @@ import SimulatorMainPage from "./SimulatorMainPage"; // Your Home component
 import StockDetailPage from "./StockDetailPage"
 import AuthPage from "./AuthPage"
 import { UserProvider } from "./UserContext";
+import Navbar from "./Navbar";
 
 function App() {
     return (
         <UserProvider>
+            <Navbar />
             <Router>
                 <Routes>
                     <Route path="/" element={<SimulatorMainPage />} />

@@ -152,17 +152,14 @@ app.get('/stock_balance', (req, res) => {
     }
 
     db.query(
-        `
-            SELECT 
+        `   SELECT 
             SUM(h.quantity * s.price) AS stock_holdings_value
             FROM 
             holdings h
             JOIN 
             stonks s
             ON 
-            h.ticker = s.ticker
-            GROUP BY 
-            h.username = ?;
+            h.ticker = s.ticker AND h.username = ?;
             `, [username], (err, results) => {
         if (err) {
             console.error(err);
@@ -172,7 +169,7 @@ app.get('/stock_balance', (req, res) => {
         if (results.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
-
+        console.log(results[0])
         res.json(results[0]);
     });
 });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./Navbar.css";
+import { useUser } from "./UserContext";
 
 function Navbar() {
 
@@ -8,8 +9,8 @@ function Navbar() {
         checkUser();
     }, []);
 
-    const [username] = useState("test_user");
     const [message, setMessage] = useState("Hello!");
+    const { username } = useUser();
     const checkUser = async () => {
         try {
             const response = await axios.post("http://localhost:5000/check-user", {
