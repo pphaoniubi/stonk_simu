@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./SimulatorMainPage.css"
 import { Link } from 'react-router-dom';
+import { useUser } from "./UserContext";
 
 const moment = require('moment-timezone');
 function SimulatorMainPage() {
@@ -9,10 +10,11 @@ function SimulatorMainPage() {
     const [stockBalance, setStockBalance] = useState(10);
     const [date, setDate] = useState(null);
     const [holdings, setHoldings] = useState([]);
-    const [username] = useState("test_user");
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
+    const { username } = useUser();
+    
     useEffect(() => {
         fetchPortfolioData();
         fetchStockBalance();
@@ -51,6 +53,7 @@ function SimulatorMainPage() {
     
     const fetchDate = async () => {
         try {
+            console.log(username)
             // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date', {
                 params: { username: username }

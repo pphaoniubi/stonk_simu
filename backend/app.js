@@ -331,6 +331,7 @@ app.get('/historical/:ticker/:username', async (req, res) => {
 
 app.get('/get-date', (req, res) => {
     const { username } = req.query;
+    console.log(username)
     db.query(
         `SELECT stock_date FROM users WHERE username = ?`,
         [username],

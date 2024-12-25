@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useUser } from "./UserContext";
 
 function AuthPage() {
-    const [username, setUsername] = useState(null); // Store the logged-in username
+    const { username, setUsername } = useUser(); // Store the logged-in username
     const [input, setInput] = useState(""); // Input field for username
     const [message, setMessage] = useState(""); // Message to display success/error
 
@@ -29,6 +30,7 @@ function AuthPage() {
 
     if (username) {
         // Display user-specific content after login/registration
+        console.log(username)
         return (
             <div>
                 <h1>Welcome, {username}!</h1>
