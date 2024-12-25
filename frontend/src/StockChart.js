@@ -26,14 +26,14 @@ ChartJS.register(
     Legend
 );
 
-function StockChart({ ticker }) {
+function StockChart({ ticker, username }) {
     const chartRef = useRef(null);
     const canvasRef = useRef(null);
 
     useEffect(() => {
         const fetchDataAndRenderChart = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/historical/${ticker}`);
+                const response = await axios.get(`http://localhost:5000/historical/${ticker}/${username}`);
                 const data = response.data;
 
                 if (!Array.isArray(data) || data.length === 0) {

@@ -56,9 +56,11 @@ function StockPrice() {
     const fetchDate = async () => {
         try {
             // Fetch user balance
-            const response = await axios.get('http://localhost:5000/get-date');
-            const kstDate = moment.utc(response.data.max_date).tz('Asia/Seoul').format('YYYY-MM-DD');
-            setDate(kstDate)    //yyyy-mm-dd format
+            const response = await axios.get('http://localhost:5000/get-date', {
+                params: { username: username }
+            });
+            const cstDate = moment.utc(response.data).tz('Asia/Shanghai').format('YYYY-MM-DD');
+            setDate(cstDate);
         } catch (error) {
             console.error('Error fetching date: ', error);
         }

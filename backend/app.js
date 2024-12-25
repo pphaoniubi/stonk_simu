@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2');
+const axios = require('axios');
+const moment = require('moment-timezone');
 
 const app = express();
 const PORT = 5000;
@@ -271,7 +273,6 @@ app.post('/sell-everything', (req, res) => {
         return res.status(400).json({ error: 'Username is required' });
     }
 
-    // Check user holdings
     db.query(
         'UPDATE holdings SET quantity = 0 WHERE username = ?',
         [username],
@@ -284,79 +285,117 @@ app.post('/sell-everything', (req, res) => {
         });
 });
 
+app.post('/restart', (req, res) => {
+    const { username } = req.body;
 
-app.get('/historical/:ticker', (req, res) => {
-  const { ticker } = req.params;
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
 
-  db.query(
-      'SELECT date, close FROM historical_prices WHERE ticker = ? AND updated = 1 ORDER BY date ASC',
-      [ticker],
-      (err, results) => {
-          if (err) throw err;
-          res.json(results); // Send data to the frontend
-      }
-  );
+    db.query(
+        'UPDATE holdings SET quantity = 0 WHERE username = ?',
+        [username],
+        (err, results) => {
+            if (err) {
+                console.error(err);  // Log the error for server-side debugging
+                return res.status(500).json({ error: 'Internal server error' });  // Return an error response to the client
+            }
+            res.json({ success: true, message: 'All holdings sold' });
+        });
+});
+
+app.get('/historical/:ticker/:username', async (req, res) => {
+  const { ticker, username } = req.params;
+    try {
+        const response = await axios.get('http://localhost:5000/get-date', {
+            params: { username: username }
+        }); // Replace with your actual endpoint URL
+        const date = moment.utc(response.data).tz('Asia/Shanghai').format('YYYY-MM-DD');
+        db.query(
+            'SELECT date, close FROM historical_prices WHERE ticker = ? AND date < ? ORDER BY date ASC',
+            [ticker, date],
+            (err, results) => {
+                if (err) throw err;
+                res.json(results); // Send data to the frontend
+            }
+        );
+    } catch(error){
+        console.error('Error calling the other endpoint:', error);
+        res.status(500).json({ error: 'Failed to fetch the date' });
+    }
 });
 
 app.get('/get-date', (req, res) => {
+    const { username } = req.query;
     db.query(
-        `SELECT MAX(date) AS max_date FROM historical_prices WHERE ticker = 'AAPL' AND updated = 1`,
+        `SELECT stock_date FROM users WHERE username = ?`,
+        [username],
         (err, results) => {
             if (err) throw err;
-            res.json(results[0]);
+            console.log("stock_date: ",results)
+            res.json(results[0].stock_date);
         }
     );
 });
 
 app.post('/update-prices', (req, res) => {
-  // Get the current date from the database
-  db.query('SELECT MIN(date) AS min_date FROM historical_prices WHERE updated = 0', (err, results) => {
-      if (err) {
-          console.error(err);
-          res.status(500).json({ error: 'Database query error' });
-          return;
-      }
-      const currentDate = results[0].min_date;
+    const { username } = req.body;
+    // Get the current date from the database
+    db.query(`SELECT stock_date FROM users WHERE username = ?`,
+        [username],
+        (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+            return;
+        }
+        const currentDate = results[0].stock_date;
+        // Update the prices for the current date
+        db.query(
+            `UPDATE stonks s
+            JOIN historical_prices hp ON s.ticker = hp.ticker
+            SET s.price = hp.close
+            WHERE hp.date = ?`, 
+            [currentDate], 
+            (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).json({ error: 'Failed to update stock prices.' });
+                    return;
+                }
 
-      if (!currentDate) {
-          console.log('No more dates to update.');
-          res.status(200).json({ message: 'All dates are already processed.' });
-          return;
-      }
+                console.log(`Stock prices updated for date: ${currentDate}`);
 
-      // Update the prices for the current date
-      db.query(
-          `UPDATE stonks s
-           JOIN historical_prices hp ON s.ticker = hp.ticker
-           SET s.price = hp.close
-           WHERE hp.date = ?`, 
-          [currentDate], 
-          (err) => {
-              if (err) {
-                  console.error(err);
-                  res.status(500).json({ error: 'Failed to update stock prices.' });
-                  return;
-              }
-
-              console.log(`Stock prices updated for date: ${currentDate}`);
-
-              // Mark the date as updated
-              db.query(
-                  'UPDATE historical_prices SET updated = 1 WHERE date = ?',
-                  [currentDate],
-                  (err) => {
-                      if (err) {
-                          console.error(err);
-                          res.status(500).json({ error: 'Failed to mark date as updated.' });
-                          return;
-                      }
-                      console.log(`Marked date ${currentDate} as updated.`);
-                      res.status(200).json({ message: `Stock prices updated for date: ${currentDate}` });
-                  }
-              );
-          }
-      );
-  });
+                // Mark the date as updated
+                db.query(
+                    'SELECT MIN(date) AS next_day FROM historical_prices WHERE date > ?',
+                    [currentDate],
+                    (err, results) => {
+                        if (err) {
+                            console.error(err);
+                            res.status(500).json({ error: 'Failed to mark date as updated.' });
+                            return;
+                        }
+                        const nextDay = results[0].next_day
+                        console.log("next day: ",nextDay)
+                        db.query(
+                            'UPDATE users SET stock_date = ?',
+                            [nextDay],
+                            (err) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.status(500).json({ error: 'Failed to mark date as updated.' });
+                                    return;
+                                }
+                                console.log(`Marked date ${currentDate} as updated.`);
+                                res.status(200).json({ message: `Stock prices updated for date: ${currentDate}` });
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    });
 });
 
 app.listen(PORT, () => {

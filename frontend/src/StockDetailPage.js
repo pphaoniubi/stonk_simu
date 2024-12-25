@@ -4,7 +4,7 @@ import StockChart from './StockChart'; // Assuming you have this component
 import "./StockDetailPage.css"
 
 const StockDetailPage = () => {
-
+  const [username] = useState("test_user");
   const { ticker } = useParams();
 
   return (
@@ -13,7 +13,7 @@ const StockDetailPage = () => {
       {ticker && (
         <div className="centered-container">
           <h2 className="centered-heading">{ticker}</h2>
-          <StockChart ticker={ticker} />
+          <StockChart ticker={ticker} username={username}/>
         </div>
       )}
     </div>

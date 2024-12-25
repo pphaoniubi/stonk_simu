@@ -7,7 +7,8 @@ use stock_simu_db;
 CREATE TABLE users (
     username VARCHAR(50) PRIMARY KEY,
     balance DECIMAL(10, 2) NOT null,
-    stonk_balance DECIMAL(10, 2)
+    stonk_balance DECIMAL(10, 2),
+    stock_date DATE
 );
 
 CREATE TABLE stonks (
