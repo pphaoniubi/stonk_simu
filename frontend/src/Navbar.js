@@ -40,7 +40,7 @@ function Navbar() {
     return (
         <nav className="navbar">
             <div className="logo">
-                <a href="/">Stock Simulator</a>
+                <a href="/main">Stock Simulator</a>
                 <a href="/stock-price">Stock Price</a>
             </div>
             <div style={{ fontSize: "24px" }}>{username}</div>
