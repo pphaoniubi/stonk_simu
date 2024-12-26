@@ -10,13 +10,13 @@ import Navbar from "./Navbar";
 function App() {
     return (
         <UserProvider>
-            <Navbar />
             <Router>
+            <Navbar />
                 <Routes>
-                    <Route path="/" element={<SimulatorMainPage />} />
+                    <Route path="/" element={<AuthPage />} />
                     <Route path="/stock-price" element={<StockPrice />} />
                     <Route path="/stock/:ticker" element={<StockDetailPage />} />
-                    <Route path="/authenticate" element={<AuthPage />} />
+                    <Route path="/main" element={<SimulatorMainPage />} />
                 </Routes>
             </Router>
         </UserProvider>

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useUser } from "./UserContext";
+import { useNavigate } from 'react-router-dom';
 
 function AuthPage() {
     const { username, setUsername } = useUser(); // Store the logged-in username
     const [input, setInput] = useState(""); // Input field for username
     const [message, setMessage] = useState(""); // Message to display success/error
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (endpoint) => {
         try {
@@ -30,14 +33,7 @@ function AuthPage() {
 
     if (username) {
         // Display user-specific content after login/registration
-        console.log(username)
-        return (
-            <div>
-                <h1>Welcome, {username}!</h1>
-                <p>You are now logged in.</p>
-                {/* You can add user-specific components like charts here */}
-            </div>
-        );
+        navigate('/main');
     }
 
     // Render the login/register form if the user is not logged in
