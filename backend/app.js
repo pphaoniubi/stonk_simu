@@ -267,24 +267,38 @@ app.post('/sell-all', (req, res) => {
     );
 });
 
-app.post('/sell-everything', (req, res) => {
+
+app.post('/sell-everything', async (req, res) => {
     const { username } = req.body;
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
 
-    db.query(
-        'UPDATE holdings SET quantity = 0 WHERE username = ?',
-        [username],
-        (err, results) => {
-            if (err) {
-                console.error(err);  // Log the error for server-side debugging
-                return res.status(500).json({ error: 'Internal server error' });  // Return an error response to the client
+    db.query('SELECT * FROM holdings WHERE username = ?', [username], async (err, results) => {
+        if (err) {
+            console.error(err); // Log the error for server-side debugging
+            return res.status(500).json({ error: 'Internal server error' }); // Return an error response to the client
+        }
+        console.log(results[0].ticker);
+        try {
+            // Use a for...of loop to handle async operations sequentially
+            for (const holding of results) {
+                await axios.post('http://localhost:5000/sell-all', {
+                    username : username,
+                    ticker: holding.ticker,
+                });
             }
+
+            // Respond after all holdings have been processed
             res.json({ success: true, message: 'All holdings sold' });
-        });
+        } catch (error) {
+            console.error(error); // Log the error for debugging
+            return res.status(500).json({ error: 'Error occurred while selling holdings' });
+        }
+    });
 });
+
 
 app.post('/restart', (req, res) => {
     const { username } = req.body;
