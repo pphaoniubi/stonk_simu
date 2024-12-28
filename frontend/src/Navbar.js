@@ -43,10 +43,10 @@ function Navbar() {
                 <a href="/main">Stock Simulator</a>
                 <a href="/stock-price">Stock Price</a>
             </div>
-            <div style={{ fontSize: "24px" }}>{username}</div>
-            {username ? (
-                <button onClick={handleLogout}>Logout</button>
-            ) : null}
+            <div className="user-controls">
+                <span className="username">{username}</span>
+                {username && <button className="logout-button" onClick={handleLogout}>Logout</button>}
+            </div>
         </nav>
     );
 }
