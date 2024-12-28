@@ -53,7 +53,7 @@ router.post('/register', (req, res) => {
 
         if (results.length > 0) {
             // User already exists
-            return res.status(409).json({ message: 'Username already exists.' });
+            return res.status(409).json({ message: 'Username already exists. Please login.' });
         } else {
             // Create a new user
             db.query('INSERT INTO users (username) VALUES (?)', [username], (err) => {

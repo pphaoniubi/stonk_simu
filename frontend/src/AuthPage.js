@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useUser } from "./UserContext";
 import { useNavigate } from 'react-router-dom';
+import "./AuthPage.css"
 
 function AuthPage() {
     const { username, setUsername } = useUser(); // Store the logged-in username
@@ -38,19 +39,22 @@ function AuthPage() {
 
     // Render the login/register form if the user is not logged in
     return (
-        <div>
-            <h2>Register or Log In</h2>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Enter your username"
-            />
-            <div>
-                <button onClick={() => handleSubmit("http://localhost:5000/auth/login")}>Log In</button>
-                <button onClick={() => handleSubmit("http://localhost:5000/auth/register")}>Register</button>
+        <div className="login-form-container">
+            <div className="login-form-box">
+                <h2>Register or Log In</h2>
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Enter your username"
+                    className="login-form-input"
+                />
+                <div  className="login-button-group">
+                    <button className="login-form-button" onClick={() => handleSubmit("http://localhost:5000/auth/login")}>Log In</button>
+                    <button className="login-form-button" onClick={() => handleSubmit("http://localhost:5000/auth/register")}>Register</button>
+                </div>
+                {message && <p style={{ color: "red" }}>{message}</p>} {/* Display error/success messages */}
             </div>
-            {message && <p style={{ color: "red" }}>{message}</p>} {/* Display error/success messages */}
         </div>
     );
 }
