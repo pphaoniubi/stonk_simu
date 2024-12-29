@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "./UserContext";
 import { useNavigate } from 'react-router-dom';
 import "./AuthPage.css"
@@ -9,6 +9,16 @@ function AuthPage() {
     const [message, setMessage] = useState(""); // Message to display success/error
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if username exists in localStorage
+        const username = localStorage.getItem('username');
+        
+        // If username exists, redirect to the main page
+        if (username) {
+            navigate('/main'); // Change '/main' to your actual main page route
+        }
+    }, [navigate]);
 
     const handleSubmit = async (endpoint) => {
         try {

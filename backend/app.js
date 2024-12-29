@@ -280,7 +280,7 @@ app.post('/sell-everything', async (req, res) => {
             console.error(err); // Log the error for server-side debugging
             return res.status(500).json({ error: 'Internal server error' }); // Return an error response to the client
         }
-        console.log(results[0].ticker);
+
         try {
             // Use a for...of loop to handle async operations sequentially
             for (const holding of results) {
@@ -382,7 +382,6 @@ app.post('/update-prices', (req, res) => {
 
                 console.log(`Stock prices updated for date: ${currentDate}`);
 
-                // Mark the date as updated
                 db.query(
                     'SELECT MIN(date) AS next_day FROM historical_prices WHERE date > ?',
                     [currentDate],
@@ -393,6 +392,10 @@ app.post('/update-prices', (req, res) => {
                             return;
                         }
                         const nextDay = results[0].next_day
+                        if (currentDate === nextDay) {
+                            res.status(207).json({ message: 'You have reached the end of this timeline.' });
+                            return;
+                        }
                         console.log("next day: ",nextDay)
                         db.query(
                             'UPDATE users SET stock_date = ?',

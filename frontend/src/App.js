@@ -6,6 +6,7 @@ import StockDetailPage from "./StockDetailPage";
 import AuthPage from "./AuthPage";
 import { UserProvider } from "./UserContext";
 import Navbar from "./Navbar";
+import LoginNavbar from "./LoginNavBar";
 
 function App() {
     return (
@@ -19,11 +20,11 @@ function App() {
 
 function MainLayout() {
     const location = useLocation();
-    const hideNavbar = location.pathname === "/";
+    const isLoginPage = location.pathname === "/";
 
     return (
         <>
-            {!hideNavbar && <Navbar />}
+            {isLoginPage ? <LoginNavbar /> : <Navbar />}
             <Routes>
                 <Route path="/" element={<AuthPage />} />
                 <Route path="/stock-price" element={<StockPrice />} />

@@ -140,6 +140,9 @@ function SimulatorMainPage() {
     
           const res = await axios.post("http://localhost:5000/update-prices", { username: username });
 
+          if (res.status === 207) {
+            alert(`${res.data.message}`);
+        }
           setResponse(res.data);
 
           window.location.reload();
@@ -152,15 +155,19 @@ function SimulatorMainPage() {
         <div>
             <div className="dateContainer">
                 <h2 className="date">{date}</h2>
-                <button onClick={fastForward} className="fastFButton">Next</button>
+                <button onClick={fastForward} className="fastFButton">Next Day</button>
             </div>
-            <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance.toFixed(2))}</h2>
-            <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
-            <button onClick={() => handleSellEverything()} className="stock-button">
-                                Sell Everything
-            </button>
+            <div style={{ paddingLeft: "20px" }}>
+                <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance.toFixed(2))}</h2>
+                <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
+            </div>
             <div className="holdings-container">
             {holdings.length > 0 && <h2>Your Holdings</h2>}
+            {holdings.length > 0 && (
+                <button onClick={() => handleSellEverything()} className="stock-button">
+                    Sell Everything
+                </button>
+            )}
             <ul className="bubble-list">
                 {holdings.map((item, index) => (
                 <li key={index} className="bubble">

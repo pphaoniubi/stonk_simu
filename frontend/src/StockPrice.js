@@ -129,7 +129,7 @@ function StockPrice() {
         <div>
             <div className="dateContainer">
                 <h2 className="date">{date}</h2>
-                <button onClick={fastForward} className="fastFButton">Next</button>
+                <button onClick={fastForward} className="fastFButton">Next Day</button>
             </div>
             <h2 style={{ textAlign: 'center' }}>Available Stocks</h2>
             <ul className="stock-ul">
