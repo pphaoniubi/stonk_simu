@@ -7,7 +7,7 @@ import { useUser } from "./UserContext";
 const moment = require('moment-timezone');
 function SimulatorMainPage() {
     const [balance, setBalance] = useState(0);
-    const [stockBalance, setStockBalance] = useState(0);
+    const [stockBalance, setStockBalance] = useState(0.0);
     const [date, setDate] = useState(null);
     const [holdings, setHoldings] = useState([]);
     const [response, setResponse] = useState(null);
@@ -29,6 +29,13 @@ function SimulatorMainPage() {
                 params: { username: username }
             });
             const balance = parseFloat(response.data.balance);
+            console.log(typeof balance);  // Check if it's a 'number'
+            console.log(balance);         // Log the value of balance
+            console.log(Number.isNaN(balance));
+            if (Number.isNaN(balance)) {
+                setBalance(0)
+                return;
+            } 
             setBalance(balance)
         } catch (error) {
             console.error('Error fetching portfolio data:', error);
@@ -42,6 +49,7 @@ function SimulatorMainPage() {
                 params: { username: username }
             });
             const stock_balance = parseFloat(response.data.stock_holdings_value);
+            console.log(stockBalance)
             setStockBalance(stock_balance);
         } catch (error) {
             console.error('Error fetching portfolio data:', error);
@@ -79,57 +87,69 @@ function SimulatorMainPage() {
     };
 
     const handleBuy = async (ticker) => {
-        const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
-        if (quantity === null) {
-            return;  // Exit the function and do nothing
-        }
-    
-        // Check if the entered quantity is a valid number
-        const quantityInt = parseInt(quantity);
-        if (isNaN(quantityInt) || quantityInt <= 0) {
-            alert('Please enter a valid quantity.');
-            return;
-        }
-        const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
-        if (!response.data.success){
-            alert(response.data.message);
+        try{
+            const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
+            if (quantity === null) {
+                return;  // Exit the function and do nothing
+            }
+        
+            // Check if the entered quantity is a valid number
+            const quantityInt = parseInt(quantity);
+            if (isNaN(quantityInt) || quantityInt <= 0) {
+                alert('Please enter a valid quantity.');
+                return;
+            }
+            const response = await axios.post('http://localhost:5000/buy', { username, ticker, quantity: parseInt(quantity) });
+        } catch(error){
+            alert(error.response.data.message);
         }
         window.location.reload();
     };
 
     const handleSell = async (ticker) => {
-        const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
-        if (quantity === null) {
-            return;  // Exit the function and do nothing
-        }
-    
-        // Check if the entered quantity is a valid number
-        const quantityInt = parseInt(quantity);
-        if (isNaN(quantityInt) || quantityInt <= 0) {
-            alert('Please enter a valid quantity.');
-            return;
-        }
-        const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
-        if (!response.data.success){
-            alert(response.data.message);
+        try{
+            const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
+            if (quantity === null) {
+                return;  // Exit the function and do nothing
+            }
+        
+            // Check if the entered quantity is a valid number
+            const quantityInt = parseInt(quantity);
+            if (isNaN(quantityInt) || quantityInt <= 0) {
+                alert('Please enter a valid quantity.');
+                return;
+            }
+            const response = await axios.post('http://localhost:5000/sell', { username, ticker, quantity: parseInt(quantity) });
+            if (!response.data.success){
+                alert(response.data.message);
+            }    
+        } catch(error){
+            alert(error.response.data.message);
         }
         window.location.reload();
     };
+
 
     const handleSellAll = async (ticker) => {
-
-        const response = await axios.post('http://localhost:5000/sell-all', { username, ticker });
-        if (!response.data.success){
-            alert(response.data.message);
+        try {
+            const response = await axios.post('http://localhost:5000/sell-all', { username, ticker });
+            if (!response.data.success){
+                alert(response.data.message);
+            }
+        } catch(error){
+            alert(error.response.data.message);
         }
         window.location.reload();
     };
 
-    const handleSellEverything = async (ticker) => {
-
+    const handleSellEverything = async () => {
+        try {
         const response = await axios.post('http://localhost:5000/sell-everything', { username });
         if (!response.data.success){
             alert(response.data.message);
+        }
+        } catch(error) {
+            alert(error.response.data.message);
         }
         window.location.reload();
     };
@@ -159,8 +179,7 @@ function SimulatorMainPage() {
             </div>
             <div style={{ paddingLeft: "20px" }}>
                 <h2>Balance: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance.toFixed(2))}</h2>
-                <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>
-            </div>
+                <h2>Stock Holdings: ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(stockBalance)}</h2>            </div>
             <div className="holdings-container">
             {holdings.length > 0 && <h2>Your Holdings</h2>}
             {holdings.length > 0 && (
