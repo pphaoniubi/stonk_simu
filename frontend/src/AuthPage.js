@@ -4,19 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import "./AuthPage.css"
 
 function AuthPage() {
-    const { username, setUsername } = useUser(); // Store the logged-in username
-    const [input, setInput] = useState(""); // Input field for username
-    const [message, setMessage] = useState(""); // Message to display success/error
+    const { username, setUsername } = useUser();
+    const [input, setInput] = useState("");
+    const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if username exists in localStorage
+
         const username = localStorage.getItem('username');
         
-        // If username exists, redirect to the main page
         if (username) {
-            navigate('/main'); // Change '/main' to your actual main page route
+            navigate('/main');
         }
     }, [navigate]);
 
@@ -31,10 +30,10 @@ function AuthPage() {
             const data = await response.json();
 
             if (response.ok) {
-                setUsername(data.username); // Set the username on successful login/register
-                setMessage(""); // Clear any previous messages
+                setUsername(data.username);
+                setMessage("");
             } else {
-                setMessage(data.message); // Display error message
+                setMessage(data.message);
             }
         } catch (error) {
             console.error("Error:", error);
@@ -43,11 +42,9 @@ function AuthPage() {
     };
 
     if (username) {
-        // Display user-specific content after login/registration
         navigate('/main');
     }
 
-    // Render the login/register form if the user is not logged in
     return (
         <div className="login-form-container">
             <div className="login-form-box">
@@ -63,7 +60,7 @@ function AuthPage() {
                     <button className="login-form-button" onClick={() => handleSubmit("http://localhost:5000/auth/login")}>Log In</button>
                     <button className="login-form-button" onClick={() => handleSubmit("http://localhost:5000/auth/register")}>Register</button>
                 </div>
-                {message && <p style={{ color: "red" }}>{message}</p>} {/* Display error/success messages */}
+                {message && <p style={{ color: "red" }}>{message}</p>}
             </div>
         </div>
     );

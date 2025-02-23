@@ -24,13 +24,12 @@ function SimulatorMainPage() {
 
     const fetchStockHolding = async () => {
         try {
-            // Fetch user balance
             const response = await axios.get('http://localhost:5000/balance', {
                 params: { username: username }
             });
             const balance = parseFloat(response.data.balance);
-            console.log(typeof balance);  // Check if it's a 'number'
-            console.log(balance);         // Log the value of balance
+            console.log(typeof balance);
+            console.log(balance);
             console.log(Number.isNaN(balance));
             if (Number.isNaN(balance)) {
                 setBalance(0)
@@ -44,7 +43,6 @@ function SimulatorMainPage() {
 
     const fetchStockBalance = async () => {
         try {
-            // Fetch user balance
             const response = await axios.get('http://localhost:5000/stock_balance', {
                 params: { username: username }
             });
@@ -59,7 +57,6 @@ function SimulatorMainPage() {
     const fetchDate = async () => {
         try {
             console.log(username)
-            // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date', {
                 params: { username: username }
             });
@@ -72,7 +69,6 @@ function SimulatorMainPage() {
 
     const fetchHoldings = async () => {
         try {
-            // Fetch user balance
             const response = await axios.get('http://localhost:5000/holdings', {
                 params: { username: username }
             });
@@ -90,10 +86,9 @@ function SimulatorMainPage() {
         try{
             const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
             if (quantity === null) {
-                return;  // Exit the function and do nothing
+                return;
             }
         
-            // Check if the entered quantity is a valid number
             const quantityInt = parseInt(quantity);
             if (isNaN(quantityInt) || quantityInt <= 0) {
                 alert('Please enter a valid quantity.');
@@ -110,10 +105,9 @@ function SimulatorMainPage() {
         try{
             const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
             if (quantity === null) {
-                return;  // Exit the function and do nothing
+                return;
             }
         
-            // Check if the entered quantity is a valid number
             const quantityInt = parseInt(quantity);
             if (isNaN(quantityInt) || quantityInt <= 0) {
                 alert('Please enter a valid quantity.');

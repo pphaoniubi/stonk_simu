@@ -4,98 +4,94 @@
   justify-content: flex-start;
 
   width: 80%;
-  margin: 0 auto; /* Ensures the container itself is centered */
+  margin: 0 auto;
 }
 
 h3 {
   margin: 0;
   padding: 10px 0;
-  text-align: left; /* Align the heading text to the left */
-  width: 100%; /* Ensure it takes full width */
+  text-align: left;
+  width: 100%;
 }
 
 .bubble-list {
     width: 100%;
-    display: flex; /* Arrange items in a row */
+    display: flex;
     flex-direction: column; 
-    gap: 10px; /* Add spacing between the bubbles */
-    list-style: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
-    margin: 0 auto; /* Remove default margin */
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    justify-content: center; /* Center items horizontally */
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; 
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
-  /* Individual bubble styles */
   .bubble {
-    display: flex; /* Align content inside bubble */
-    flex-direction: column; /* Stack ticker and quantity vertically */
-    justify-content: center; /* Center content vertically */
-    align-items: center; /* Center content horizontally */
-    padding: 10px 15px; /* Space inside the bubble */
-    background-color: #f1f1f1; /* Light gray background */
-    border-radius: 20px; /* Rounded corners for bubble effect */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-    font-family: Arial, sans-serif; /* Optional: Change font */
-    font-size: 14px; /* Adjust text size */
-    min-width: 100px; /* Set a minimum width */
-    text-align: center; /* Center-align text */
-    cursor: pointer; /* Add pointer cursor for interactivity */
-    transition: transform 0.2s, background-color 0.2s; /* Add hover effect */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 15px; 
+    background-color: #f1f1f1;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    min-width: 100px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
   }
   
-  /* Hover effect for bubbles */
+
   .bubble:hover {
-    background-color: #e0e0e0; /* Slightly darker background on hover */
-    transform: scale(1.05); /* Slightly enlarge bubble on hover */
+    background-color: #e0e0e0;
+    transform: scale(1.05);
   }
   
   .link-container {
-    text-decoration: none; /* Removes underline from the link */
+    text-decoration: none;
   }
 
-  /* Ticker styling */
   .ticker {
-    font-weight: bold; /* Make the ticker bold */
-    font-size: 22px; /* Slightly larger text */
-    color: #333; /* Darker text for ticker */
+    font-weight: bold;
+    font-size: 22px;
+    color: #333;
     margin-right: 5px;
   }
   
-  /* Quantity styling */
   .quantity {
-    font-size: 22px; /* Smaller text for quantity */
-    color: #000000; /* Medium gray for quantity */
-    margin-left: 4px; /* Adjust the value as needed */
+    font-size: 22px;
+    color: #000000;
+    margin-left: 4px;
   }
 
   .dateContainer {
     display: flex;
-    justify-content: center; /* Centers the items horizontally */
-    align-items: center; /* Centers the items vertically */
+    justify-content: center;
+    align-items: center;
   }
 
   .date {
-    margin-right: 10px; /* Optional: Adds some space between the elements */
+    margin-right: 10px;
   }
   
   .fastFButton {
-    padding: 10px 20px; /* Add padding around the text */
-    font-size: 16px; /* Set the font size */
-    background-color: #007bff; /* Set background color (Bootstrap primary color) */
-    color: white; /* Text color */
-    border: none; /* Remove the default border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Change cursor to a pointer on hover */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
     margin-left: 10px;
   }
   
   .fastFButton:hover {
-    background-color: #0056b3; /* Darker shade when hovering */
+    background-color: #0056b3;
   }
 
-  /* Button group alignment */
 .button-group {
   margin-top: 10px;
   display: flex;
@@ -104,16 +100,16 @@ h3 {
   justify-content: center;
 }
 
-/* Button styling */
+
 .stock-button {
   padding: 5px 10px;
   border: none;
-  background-color: #007bff; /* Light blue color */
+  background-color: #007bff;
   color: white;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .stock-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }

@@ -10,13 +10,11 @@ const authRoutes = require('./user_auth');
 const app = express();
 const PORT = 5000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/auth', authRoutes);
 
-// Create MySQL Connection
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -24,13 +22,12 @@ const db = mysql.createConnection({
     database: 'stock_simu_db',
 });
 
-// Connect to MySQL
 db.connect((err) => {
     if (err) {
         console.error('MySQL connection error:', err);
         return;
     }
-  // Set the session time zone to the system's time zone
+
   db.query('SET time_zone = SYSTEM', (err, result) => {
     if (err) {
       console.error('Error setting time zone:', err);
@@ -56,7 +53,6 @@ app.post("/check-user", (req, res) => {
             return res.status(500).json({ message: "Database error" });
         }
 
-        // Check if user exists
         if (results.length > 0) {
             return res.json({ exists: true, user: results[0] });
         } else {
@@ -65,7 +61,6 @@ app.post("/check-user", (req, res) => {
     });
 });
 
-// Routes
 app.get('/stocks', (req, res) => {
     db.query('SELECT * FROM stonks', (err, results) => {
         if (err) throw err;
@@ -73,7 +68,6 @@ app.get('/stocks', (req, res) => {
     });
 });
 
-// Routes
 app.get('/holdings', (req, res) => {
     const username = req.query.username;
     if (!username) {
@@ -88,7 +82,7 @@ app.get('/holdings', (req, res) => {
 });
 
 app.get('/balance', (req, res) => {
-    const username = req.query.username; // Extract username from query
+    const username = req.query.username;
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
@@ -146,7 +140,7 @@ app.post('/price-difference', (req, res) => {
 });
 
 app.get('/stock_balance', (req, res) => {
-    const username = req.query.username; // Extract username from query
+    const username = req.query.username;
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
@@ -176,19 +170,17 @@ app.get('/stock_balance', (req, res) => {
 
 app.post('/buy', (req, res) => {
     const { username, ticker, quantity } = req.body;
-    // Get stock price
+
     db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
         if (err) throw err;
         const price = results[0].price;
         const cost = price * quantity;
 
-        // Check user balance
         db.query('SELECT balance FROM users WHERE username = ?', [username], (err, results) => {
             if (err) throw err;
             const balance = results[0].balance;
 
             if (balance >= cost) {
-                // Update user balance and holdings
                 db.query('UPDATE users SET balance = balance - ? WHERE username = ?', [cost, username]);
                 db.query(
                     'INSERT INTO holdings (username, ticker, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?',
@@ -207,7 +199,6 @@ app.post('/buy', (req, res) => {
 
 app.post('/sell', (req, res) => {
     const { username, ticker, quantity } = req.body;
-    // Check user holdings
     db.query(
         'SELECT quantity FROM holdings WHERE username = ? AND ticker = ?',
         [username, ticker],
@@ -215,7 +206,6 @@ app.post('/sell', (req, res) => {
             if (err) throw err;
             const currentQuantity = results.length ? results[0].quantity : 0;
             if (currentQuantity >= quantity) {
-                // Get stock price and update user balance and holdings
                 db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
                     if (err) throw err;
                     const price = results[0].price;
@@ -240,14 +230,12 @@ app.post('/sell', (req, res) => {
 
 app.post('/sell-all', (req, res) => {
     const { username, ticker } = req.body;
-    // Check user holdings
     db.query(
         'SELECT quantity FROM holdings WHERE username = ? AND ticker = ?',
         [username, ticker],
         (err, results) => {
             if (err) throw err;
             const quantity = results.length ? results[0].quantity : 0;
-                // Get stock price and update user balance and holdings
                 db.query('SELECT price FROM stonks WHERE ticker = ?', [ticker], (err, results) => {
                     if (err) throw err;
                     const price = results[0].price;
@@ -277,12 +265,11 @@ app.post('/sell-everything', async (req, res) => {
 
     db.query('SELECT * FROM holdings WHERE username = ?', [username], async (err, results) => {
         if (err) {
-            console.error(err); // Log the error for server-side debugging
-            return res.status(500).json({ error: 'Internal server error' }); // Return an error response to the client
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
         }
 
         try {
-            // Use a for...of loop to handle async operations sequentially
             for (const holding of results) {
                 await axios.post('http://localhost:5000/sell-all', {
                     username : username,
@@ -290,10 +277,9 @@ app.post('/sell-everything', async (req, res) => {
                 });
             }
 
-            // Respond after all holdings have been processed
             res.json({ success: true, message: 'All holdings sold' });
         } catch (error) {
-            console.error(error); // Log the error for debugging
+            console.error(error);
             return res.status(500).json({ error: 'Error occurred while selling holdings' });
         }
     });
@@ -312,8 +298,8 @@ app.post('/restart', (req, res) => {
         [username],
         (err, results) => {
             if (err) {
-                console.error(err);  // Log the error for server-side debugging
-                return res.status(500).json({ error: 'Internal server error' });  // Return an error response to the client
+                console.error(err);
+                return res.status(500).json({ error: 'Internal server error' });
             }
             res.json({ success: true, message: 'All holdings sold' });
         });
@@ -324,14 +310,14 @@ app.get('/historical/:ticker/:username', async (req, res) => {
     try {
         const response = await axios.get('http://localhost:5000/get-date', {
             params: { username: username }
-        }); // Replace with your actual endpoint URL
+        });
         const date = moment.utc(response.data).tz('Asia/Shanghai').format('YYYY-MM-DD');
         db.query(
             'SELECT date, close FROM historical_prices WHERE ticker = ? AND date < ? ORDER BY date ASC',
             [ticker, date],
             (err, results) => {
                 if (err) throw err;
-                res.json(results); // Send data to the frontend
+                res.json(results);
             }
         );
     } catch(error){
@@ -356,7 +342,6 @@ app.get('/get-date', (req, res) => {
 
 app.post('/update-prices', (req, res) => {
     const { username } = req.body;
-    // Get the current date from the database
     db.query(`SELECT stock_date FROM users WHERE username = ?`,
         [username],
         (err, results) => {
@@ -366,7 +351,6 @@ app.post('/update-prices', (req, res) => {
             return;
         }
         const currentDate = results[0].stock_date;
-        // Update the prices for the current date
         db.query(
             `UPDATE stonks s
             JOIN historical_prices hp ON s.ticker = hp.ticker

@@ -1,17 +1,16 @@
-/* .stock-ul styles */
 .stock-ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 0;
   list-style: none;
-  justify-content: center; /* Center list items vertically */
-  align-items: center; /* Center list items horizontally */
-  width: 100%; /* Ensure full width for centering */
-  margin: 0 auto; /* Center the list horizontally */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* .stock-li styles */
+
 .stock-li {
   background-color: #f1f1f1;
   border-radius: 25px;
@@ -20,37 +19,35 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between; /* Spread out content in the list item */
+  justify-content: space-between;
   transition: transform 0.2s ease;
-  width: 80%; /* Adjust the width to control how wide each item is */
+  width: 80%;
 }
 
-/* Button styling */
 .stock-button {
   padding: 5px 10px;
   border: none;
-  background-color: #007bff; /* Light blue color */
+  background-color: #007bff;
   color: white;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .stock-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }
 
-/* Positive and Negative price difference */
+
 .positive {
-  background-color: #4caf50; /* Green for positive */
+  background-color: #4caf50;
   color: white;
 }
 
 .negative {
-  background-color: #f44336; /* Red for negative */
+  background-color: #f44336;
   color: white;
 }
 
-/* Button group alignment */
 .button-group {
   margin-top: 10px;
   display: flex;
@@ -59,20 +56,17 @@
   justify-content: center;
 }
 
-/* Stock Info flex layout */
 .stock-info {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 80%; /* Ensure it doesn't take up the whole space */
+  width: 80%;
 }
 
-/* Hover effect for list items */
 .stock-li:hover {
-  transform: translateY(-5px); /* Lift on hover */
+  transform: translateY(-5px);
 }
 
-/* Fast Forward Button */
 .fastFButton {
   padding: 10px 20px;
   font-size: 16px;

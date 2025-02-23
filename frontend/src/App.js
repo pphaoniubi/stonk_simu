@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import StockPrice from "./StockPrice"; // Your StockPrice component
-import SimulatorMainPage from "./SimulatorMainPage"; // Your Home component
+import StockPrice from "./StockPrice";
+import SimulatorMainPage from "./SimulatorMainPage";
 import StockDetailPage from "./StockDetailPage";
 import AuthPage from "./AuthPage";
 import { UserProvider } from "./UserContext";

@@ -14,7 +14,6 @@ import {
 import { Chart } from 'chart.js';
 import axios from 'axios';
 
-// Register required components
 ChartJS.register(
     LineElement,
     CategoryScale,
@@ -41,7 +40,6 @@ function StockChart({ ticker, username }) {
                     return;
                 }
 
-                // Process data
                 const dates = data.map(entry => entry.date);
                 const prices = data.map(entry => entry.close);
                 
@@ -51,13 +49,11 @@ function StockChart({ ticker, username }) {
                     return;
                 }
 
-                // Destroy previous chart instance if it exists
                 if (chartRef.current) {
                     chartRef.current.destroy();
                     console.log("destoryed")
                 }
 
-                // Create a new chart
                 chartRef.current = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -84,26 +80,24 @@ function StockChart({ ticker, username }) {
                         },
                         scales: {
                             x: {
-                                type: 'category', // Keep the default category scale
+                                type: 'category',
                                 title: {
                                     display: true,
                                     text: 'Month',
                                 },
                                 ticks: {
                                     callback: function (value, index, values) {
-                                        // Format the date label to show month only
                                         const currentDate  = new Date(this.getLabelForValue(value));
                                         const prevDate = index > 0 ? new Date(this.getLabelForValue(values[index - 1].value)) : null;
-                                        //console.log(currentDate.getMonth())
                                         
                                         if (!prevDate || currentDate.getMonth() !== prevDate.getMonth()) {
                                             return currentDate.toLocaleString("default", { month: "short", year: "numeric" });
                                         }
                                 
-                                        return ''; // Skip repeating months
+                                        return '';
                                     },
-                                    maxRotation: 0, // Prevent label rotation
-                                    autoSkip: true, // Skip some labels for clarity
+                                    maxRotation: 0,
+                                    autoSkip: true, 
                                 },
                             },
                             y: {
@@ -122,7 +116,6 @@ function StockChart({ ticker, username }) {
 
         fetchDataAndRenderChart();
 
-        // Cleanup: Destroy chart on component unmount
         return () => {
             if (chartRef.current) {
                 chartRef.current.destroy();

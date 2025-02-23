@@ -9,7 +9,6 @@ from sqlalchemy import create_engine, Table, MetaData, Column, String, Float, Bo
 db_password = '12345678pP!'
 def fetch_tickers_from_db():
     try:
-        # Connect to your MySQL database
         conn = mysql.connector.connect(
             host="localhost",
             database="stock_simu_db",
@@ -17,15 +16,11 @@ def fetch_tickers_from_db():
             password=db_password
         )
         if conn.is_connected():
-            cursor = conn.cursor()
-
-            # Execute SQL query to retrieve all tickers
-            cursor.execute("SELECT ticker FROM stonks;")
             
-            # Fetch all ticker symbols
+            cursor = conn.cursor()
+            cursor.execute("SELECT ticker FROM stonks;")
             tickers = cursor.fetchall()
 
-            # Close cursor and connection
             cursor.close()
             conn.close()
             return tickers
@@ -35,7 +30,6 @@ def fetch_tickers_from_db():
         return []
     
 def fetch_and_store_data():
-    # Connection and engine setup
     engine = create_engine(f'mysql+pymysql://root:{db_password}@localhost:3306/stock_simu_db', echo=True)
     metadata = MetaData()
     connection = engine.connect()
@@ -44,21 +38,21 @@ def fetch_and_store_data():
     try:
         stonk = Table(
                     'historical_prices', metadata,
-                    Column('id', Integer, autoincrement=True, primary_key=True),  # Auto-increment primary key
-                    Column('ticker', String(10), nullable=False),                # Stock ticker
-                    Column('date', Date, nullable=False),                        # Date of the record
-                    Column('open', Float),                                       # Opening price
-                    Column('high', Float),                                       # Highest price
-                    Column('low', Float),                                        # Lowest price
-                    Column('close', Float),                                      # Closing price
-                    Column('volume', Integer),                                   # Trade volume
-                    Column('updated', Boolean),                                  # Updated flag
+                    Column('id', Integer, autoincrement=True, primary_key=True),
+                    Column('ticker', String(10), nullable=False),
+                    Column('date', Date, nullable=False),
+                    Column('open', Float),
+                    Column('high', Float),
+                    Column('low', Float), 
+                    Column('close', Float),
+                    Column('volume', Integer),
+                    Column('updated', Boolean),
                 )
 
         metadata.create_all(engine)
 
         connection.execute(delete(stonk))
-        transaction.commit()  # Commit the deletion before starting inserts
+        transaction.commit()
 
         transaction = connection.begin()
         tickers = fetch_tickers_from_db()
@@ -72,7 +66,6 @@ def fetch_and_store_data():
                 print(f"No data returned for {ticker}")
                 continue
             
-            # Prepare and execute insert statements for each day's data
             for index, row in data.iterrows():
                 insert_stmt = stonk.insert().values(
                     ticker=ticker,
@@ -81,7 +74,7 @@ def fetch_and_store_data():
                     high=float(row['High']),
                     low=float(row['Low']),
                     close=float(row['Close']),
-                    volume=int(row['Volume']),  # Ensure type consistency
+                    volume=int(row['Volume']),
                     updated=False
                 )
                 connection.execute(insert_stmt)

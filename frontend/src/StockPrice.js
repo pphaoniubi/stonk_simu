@@ -23,7 +23,7 @@ function StockPrice() {
     const fetchStocks = async () => {
         if (!date) {
             console.log("Date is not provided");
-            return;  // Exit the function early if date is not available
+            return;
         }
         const response = await axios.get('http://localhost:5000/stocks');
         const stocks = [];
@@ -57,7 +57,6 @@ function StockPrice() {
     
     const fetchDate = async () => {
         try {
-            // Fetch user balance
             const response = await axios.get('http://localhost:5000/get-date', {
                 params: { username: username }
             });
@@ -72,10 +71,9 @@ function StockPrice() {
         try{
             const quantity = prompt(`How many shares of ${ticker} do you want to buy?`);
             if (quantity === null) {
-                return;  // Exit the function and do nothing
+                return;
             }
         
-            // Check if the entered quantity is a valid number
             const quantityInt = parseInt(quantity);
             if (isNaN(quantityInt) || quantityInt <= 0) {
                 alert('Please enter a valid quantity.');
@@ -92,10 +90,9 @@ function StockPrice() {
         try{
             const quantity = prompt(`How many shares of ${ticker} do you want to sell?`);
             if (quantity === null) {
-                return;  // Exit the function and do nothing
+                return;
             }
         
-            // Check if the entered quantity is a valid number
             const quantityInt = parseInt(quantity);
             if (isNaN(quantityInt) || quantityInt <= 0) {
                 alert('Please enter a valid quantity.');

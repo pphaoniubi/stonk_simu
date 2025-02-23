@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import StockChart from './StockChart'; // Assuming you have this component
+import StockChart from './StockChart';
 import "./StockDetailPage.css"
 import { useUser } from "./UserContext";
 
@@ -10,7 +10,6 @@ const StockDetailPage = () => {
   const { username } = useUser();
   return (
     <div>
-      {/* Conditionally render StockChart if a stock is selected */}
       {ticker && (
         <div className="centered-container">
           <h2 className="centered-heading">{ticker}</h2>

@@ -4,12 +4,11 @@ const UserContext = createContext();
 
 export function UserProvider({ children }) {
     const [username, setUsername] = useState(() => {
-        // Load username from localStorage when the app initializes
+
         return localStorage.getItem("username") || null;
     });
 
     useEffect(() => {
-        // Save username to localStorage whenever it changes
         if (username) {
             localStorage.setItem("username", username);
         } else {
